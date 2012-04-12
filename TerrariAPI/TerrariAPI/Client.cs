@@ -49,12 +49,12 @@ namespace TerrariAPI
                 }));
             Command.Add(new Command("print", (o, e) =>
             {
-                if (e.plainText.Length == 5)
+                if (e.plainText == "")
                 {
                     PrintError("No text to print.");
                     return;
                 }
-                Print(e.plainText.Substring(5), new Color(255, 255, 255));
+                Print(e.plainText.Substring(1), new Color(255, 255, 255));
             }));
             Command.Add(new Command("repeat", (o, e) =>
             {
@@ -78,6 +78,7 @@ namespace TerrariAPI
             GUI.BindCursor(CursorType.RESIZE_DIAGONAL, content.Load<Texture2D>("TerrariAPI/Cursors/ResizeDiag"));
             GUI.BindCursor(CursorType.TEXT, content.Load<Texture2D>("TerrariAPI/Cursors/Text"));
             GUI.BindFont(content.Load<SpriteFont>("TerrariAPI/Font"));
+            main.Set("cursorTexture", new Texture2D(game.GraphicsDevice, 1, 1));
             Plugin.Content();
         }
         internal static void Update()
