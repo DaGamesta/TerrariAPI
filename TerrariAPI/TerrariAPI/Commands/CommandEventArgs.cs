@@ -39,7 +39,7 @@ namespace TerrariAPI.Commands
         internal CommandEventArgs(string str)
         {
             plainText = str;
-            str = Regex.Replace(str, @"\s+", " ");
+            str = Regex.Replace(str.Trim(), @"\s+", " ");
             List<string> args = new List<string>();
             string temp = "";
             bool quotes = false;

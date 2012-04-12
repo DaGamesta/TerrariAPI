@@ -12,11 +12,19 @@ namespace TerrariAPI.Hooking
     public abstract class Wrapper
     {
         /// <summary>
+        /// A Terraria.Item wrapper.
+        /// </summary>
+        public static Item item;
+        /// <summary>
         /// A Terraria.Main wrapper.
         /// </summary>
         public static Main main;
         internal object obj = null;
         internal Type type;
+        /// <summary>
+        /// A Terraria.WorldGen wrapper.
+        /// </summary>
+        public static WorldGen worldGen;
 
         internal Wrapper(object obj)
         {
@@ -40,9 +48,9 @@ namespace TerrariAPI.Hooking
         /// </summary>
         /// <param name="method">Method name to invoke.</param>
         /// <param name="parameters">Parameters to invoke the method with.</param>
-        public void Invoke(string method, params object[] parameters)
+        public dynamic Invoke(string method, params object[] parameters)
         {
-            type.GetMethod(method, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static).Invoke(obj, parameters);
+            return type.GetMethod(method, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static).Invoke(obj, parameters);
         }
         /// <summary>
         /// Sets the value of a field on the wrapped type or instance.

@@ -109,7 +109,7 @@ namespace TerrariAPI.Plugins
             {
                 Directory.CreateDirectory("Plugins");
             }
-            foreach (string fName in Directory.EnumerateFiles("Plugins"))
+            foreach (string fName in Directory.EnumerateFiles("Plugins", "*.dll"))
             {
                 Assembly asm = Assembly.LoadFrom(fName);
                 if (asm != null)

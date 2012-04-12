@@ -98,8 +98,8 @@ namespace TerrariAPI
         {
             if (disableMouse)
             {
-                main.Set("mouseState", new MouseState(0, 0, 0, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released));
-                main.Set("oldMouseState", new MouseState(0, 0, 0, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released));
+                main.Set("mouseState", new MouseState(0, 0, Mouse.GetState().ScrollWheelValue, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released));
+                main.Set("oldMouseState", new MouseState(0, 0, Mouse.GetState().ScrollWheelValue, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released));
             }
         }
         internal static void Update2()

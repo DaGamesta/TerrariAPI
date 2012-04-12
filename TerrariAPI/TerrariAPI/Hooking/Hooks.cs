@@ -22,6 +22,8 @@ namespace TerrariAPI.Hooking
             MemoryStream ms = new MemoryStream();
             asm.Write(ms);
             Assembly terraria = Assembly.Load(ms.GetBuffer());
+            Wrapper.item = new Item() { type = terraria.GetType("Terraria.Item") };
+            Wrapper.worldGen = new WorldGen() { type = terraria.GetType("Terraria.WorldGen") };
             Wrapper.main = new Main(terraria.GetType("Terraria.Main").GetConstructor(new Type[] { }).Invoke(null));
             Wrapper.main.Invoke("Run");
         }
