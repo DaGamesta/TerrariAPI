@@ -92,8 +92,9 @@
     <Reference Include="System.Net">
       <Private>False</Private>
     </Reference>
-    <Reference Include="XNAForms">
-      <HintPath>..\..\..\XNAForms\Binaries\XNAForms.dll</HintPath>
+    <Reference Include="XNAForms, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\XNAForms\bin\XNAForms.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
