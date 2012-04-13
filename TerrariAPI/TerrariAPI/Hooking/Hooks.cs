@@ -18,17 +18,25 @@ namespace TerrariAPI.Hooking
         {
             asm = AssemblyDefinition.ReadAssembly("Terraria.exe");
             mod = asm.MainModule;
-            Hook();
+            HookKeys();
+            HookMain();
             MemoryStream ms = new MemoryStream();
             asm.Write(ms);
             Assembly terraria = Assembly.Load(ms.GetBuffer());
             Wrapper.item = new Item() { type = terraria.GetType("Terraria.Item") };
+            Wrapper.netMessage = new NetMessage() { type = terraria.GetType("Terraria.NetMessage") };
+            Wrapper.netplay = new Netplay() { type = terraria.GetType("Terraria.Netplay") };
             Wrapper.worldGen = new WorldGen() { type = terraria.GetType("Terraria.WorldGen") };
             Wrapper.main = new Main(terraria.GetType("Terraria.Main").GetConstructor(new Type[] { }).Invoke(null));
             Wrapper.main.Invoke("Run");
         }
-
-        private static void Hook()
+        private static void HookKeys()
+        {
+            MethodDefinition ctor = asm.GetMethod("keyBoardInput", ".cctor");
+            ILProcessor ctorp = ctor.Body.GetILProcessor();
+            ctorp.InsertBefore(ctor.Body.Instructions[0], ctorp.Create(OpCodes.Ret));
+        }
+        private static void HookMain()
         {
             ILProcessor temp = null;
             Instruction tempInstr = null;
@@ -76,6 +84,15 @@ namespace TerrariAPI.Hooking
                     }
                 }
             }
+            MethodDefinition newText = asm.GetMethod("Main", "NewText");
+            temp = newText.Body.GetILProcessor();
+            tempInstr = newText.Body.Instructions[0];
+            temp.InsertBefore(tempInstr, temp.Create(OpCodes.Ldarg_0));
+            temp.InsertBefore(tempInstr, temp.Create(OpCodes.Ldarg_1));
+            temp.InsertBefore(tempInstr, temp.Create(OpCodes.Ldarg_2));
+            temp.InsertBefore(tempInstr, temp.Create(OpCodes.Ldarg_3));
+            temp.InsertBefore(tempInstr, temp.Create(OpCodes.Call, mod.Import(GetClientMethod("AddMessage"))));
+            temp.InsertBefore(tempInstr, temp.Create(OpCodes.Ret));
             MethodDefinition draw = asm.GetMethod("Main", "Draw");
             temp = draw.Body.GetILProcessor();
             var onDraw = mod.Import(GetClientMethod("Draw"));

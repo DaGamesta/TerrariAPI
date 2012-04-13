@@ -98,13 +98,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatForm.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Hooking\Item.cs" />
+    <Compile Include="Hooking\NetMessage.cs" />
+    <Compile Include="Hooking\Netplay.cs" />
     <Compile Include="Hooking\WorldGen.cs" />
     <Compile Include="State.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CommandEventArgs.cs" />
-    <Compile Include="ConsoleForm.cs" />
     <Compile Include="Hooking\Hooks.cs" />
     <Compile Include="Hooking\Main.cs" />
     <Compile Include="Hooking\Wrapper.cs" />

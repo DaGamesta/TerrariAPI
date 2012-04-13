@@ -15,7 +15,7 @@ namespace TerrariAPI
 {
     internal static class Client
     {
-        private static ConsoleForm consoleForm;
+        private static ChatForm chatForm;
         internal static bool disableKeys;
         internal static bool disableMouse;
         internal static Game game;
@@ -29,7 +29,7 @@ namespace TerrariAPI
             Plugin.Initialize();
             Command.Add(new Command("clear", (o, e) =>
                 {
-                    consoleForm.Clear();
+                    chatForm.Clear();
                 }));
             Command.Add(new Command("help", (o, e) =>
                 {
@@ -66,7 +66,7 @@ namespace TerrariAPI
                 Command.Execute(Command.lastCommand);
             }));
             GUI.Initialize(game);
-            GUI.Add(consoleForm = new ConsoleForm());
+            GUI.Add(chatForm = new ChatForm());
         }
         internal static void LoadContent()
         {
@@ -86,6 +86,29 @@ namespace TerrariAPI
             state = State.UPDATE;
             Plugin.Update();
             GUI.Update();
+            switch ((int)main.Get("menuMode"))
+            {
+                case 3:
+                    main.Set(main.Get("loadPlayer")[main.Get("numLoadPlayers")].name, main.Get("loadPlayer")[main.Get("numLoadPlayers")].name + Input.NextStr());
+                    break;
+                case 7:
+                    main.Set("newWorldName", main.Get("newWorldName") + Input.NextStr());
+                    break;
+                case 13:
+                    main.Set("getIP", main.Get("getIP") + Input.NextStr());
+                    break;
+                case 30:
+                case 31:
+                    Wrapper.netplay.Set("password", Wrapper.netplay.Get("password") + Input.NextStr());
+                    break;
+                case 131:
+                    main.Set("getPort", main.Get("getPort") + Input.NextStr());
+                    break;
+            }
+            if (main.Get("editSign"))
+            {
+                main.Set("npcChatText", main.Get("npcChatText") + Input.NextStr());
+            }
         }
         internal static void DKeys()
         {
@@ -105,6 +128,15 @@ namespace TerrariAPI
         internal static void Update2()
         {
             disableKeys = disableMouse = false;
+            main.Set("chatMode", false);
+        }
+        internal static void AddMessage(string str, int r, int g, int b)
+        {
+            if (r == 0 && g == 0 && b == 0)
+            {
+                r = g = b = 255;
+            }
+            chatForm.AddMessage(str, new Color(r, g, b));
         }
         internal static void Draw()
         {
@@ -121,15 +153,15 @@ namespace TerrariAPI
 
         internal static void Print(string str, Color color)
         {
-            consoleForm.AddMessage(str, color);
+            chatForm.AddMessage(str, color);
         }
         internal static void PrintError(string str)
         {
-            consoleForm.AddMessage(str, new Color(225, 25, 25));
+            chatForm.AddMessage(str, new Color(225, 25, 25));
         }
         internal static void PrintNotification(string str)
         {
-            consoleForm.AddMessage(str, new Color(25, 225, 25));
+            chatForm.AddMessage(str, new Color(25, 225, 25));
         }
     }
 }

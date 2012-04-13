@@ -1,18 +1,19 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using TerrariAPI.Commands;
+using TerrariAPI.Hooking;
 using XNAForms;
 using XNAForms.Forms;
-using TerrariAPI.Commands;
 
 namespace TerrariAPI
 {
-    internal sealed class ConsoleForm : Form
+    internal sealed class ChatForm : Form
     {
         private TextArea ta1;
         private TextBox tb1;
 
-        internal ConsoleForm()
-            : base(new Position(0, 0), new Size(400, 250), "Console")
+        internal ChatForm()
+            : base(new Position(0, 0), new Size(400, 250), "Chat")
         {
             ta1 = new TextArea(new Position(0, 0), new Size(0, 0));
             ta1.dockStyle = DockStyle.TOP;
@@ -24,7 +25,7 @@ namespace TerrariAPI
             tb1.onEnter += OnEnter;
             tb1.sizeFunction = () => new Size(size.width - 12, tb1.size.height);
             Add(tb1);
-            
+
             onUpdate += (o, e) =>
             {
                 if (rectangle.IntersectsMouse())
@@ -53,7 +54,18 @@ namespace TerrariAPI
             TextBox tb = (TextBox)sender;
             if (tb.text != "")
             {
-                Command.Execute(tb.text);
+                if (tb.text[0] == '.')
+                {
+                    Command.Execute(tb.text.Substring(1));
+                }
+                else if (Wrapper.main.Get("netMode") == 0)
+                {
+                    Client.PrintError("Messages may only be sent in multiplayer.");
+                }
+                else
+                {
+                    Wrapper.netMessage.SendData(25, tb.text);
+                }
                 tb.Clear();
             }
         }

@@ -19,6 +19,14 @@ namespace TerrariAPI.Hooking
         /// A Terraria.Main wrapper.
         /// </summary>
         public static Main main;
+        /// <summary>
+        /// A Terraria.NetMessage wrapper.
+        /// </summary>
+        public static NetMessage netMessage;
+        /// <summary>
+        /// A Terraria.Netplay wrapper.
+        /// </summary>
+        public static Netplay netplay;
         internal object obj = null;
         internal Type type;
         /// <summary>
