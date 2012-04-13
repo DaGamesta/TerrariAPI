@@ -55,7 +55,7 @@ namespace TerrariAPI
             switch ((int)main.Get("menuMode"))
             {
                 case 3:
-                    main.Set(main.Get("loadPlayer")[main.Get("numLoadPlayers")].name, main.Get("loadPlayer")[main.Get("numLoadPlayers")].name + Input.NextStr());
+                    main.Get("loadPlayer")[main.Get("numLoadPlayers")].name = main.Get("loadPlayer")[main.Get("numLoadPlayers")].name + Input.NextStr();
                     break;
                 case 7:
                     main.Set("newWorldName", main.Get("newWorldName") + Input.NextStr());
