@@ -10,7 +10,7 @@ namespace TerrariAPI.Hooking
     /// </summary>
     public sealed class WorldGen : Wrapper
     {
-        public WorldGen()
+        internal WorldGen()
             : base((Type)null)
         {
         }

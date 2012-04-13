@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 namespace TerrariAPI.Commands
 {
@@ -19,7 +20,14 @@ namespace TerrariAPI.Commands
         internal static List<Command> commands = new List<Command>();
         internal static string lastCommand;
 
+        /// <summary>
+        /// Callback to be run when the command is executed.
+        /// </summary>
         public readonly CommandEventHandler callback;
+        internal readonly string desc;
+        /// <summary>
+        /// Name of the command.
+        /// </summary>
         public readonly string name;
         /// <summary>
         /// Creates a new command.
@@ -28,7 +36,9 @@ namespace TerrariAPI.Commands
         /// <param name="callback">Callback for the new command.</param>
         public Command(string name, CommandEventHandler callback)
         {
+            DescriptionAttribute attrib = callback.Method.GetCustomAttributes(false).First(a => a is DescriptionAttribute) as DescriptionAttribute;
             this.callback = callback;
+            desc = attrib.description;
             this.name = name;
         }
         /// <summary>

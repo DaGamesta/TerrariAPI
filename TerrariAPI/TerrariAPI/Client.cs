@@ -27,44 +27,10 @@ namespace TerrariAPI
             state = State.INIT;
             Plugin.Load();
             Plugin.Initialize();
-            Command.Add(new Command("clear", (o, e) =>
-                {
-                    chatForm.Clear();
-                }));
-            Command.Add(new Command("help", (o, e) =>
-                {
-                    List<string> commands = new List<string>();
-                    foreach (Command c in Command.commands)
-                    {
-                        commands.Add(c.name);
-                    }
-                    commands.Sort();
-                    Print("Commands:", new Color(25, 155, 25));
-                    string text = "";
-                    for (int i = 0; i < commands.Count; i++)
-                    {
-                        text += text == "" ? commands[i] : ", " + commands[i];
-                    }
-                    Print(text, new Color(225, 225, 25));
-                }));
-            Command.Add(new Command("print", (o, e) =>
-            {
-                if (e.plainText == "")
-                {
-                    PrintError("No text to print.");
-                    return;
-                }
-                Print(e.plainText.Substring(1), new Color(255, 255, 255));
-            }));
-            Command.Add(new Command("repeat", (o, e) =>
-            {
-                if (Command.lastCommand == null)
-                {
-                    PrintError("No last command.");
-                    return;
-                }
-                Command.Execute(Command.lastCommand);
-            }));
+            Command.Add(new Command("clear", Clear));
+            Command.Add(new Command("help", Help));
+            Command.Add(new Command("repeat", Repeat));
+            Command.Add(new Command("say", Say));
             GUI.Initialize(game);
             GUI.Add(chatForm = new ChatForm());
         }
@@ -153,15 +119,85 @@ namespace TerrariAPI
 
         internal static void Print(string str, Color color)
         {
-            chatForm.AddMessage(str, color);
+            chatForm.AddMessage("[API] " + str, color);
         }
         internal static void PrintError(string str)
         {
-            chatForm.AddMessage(str, new Color(225, 25, 25));
+            chatForm.AddMessage("[API] " + str, new Color(225, 25, 25));
         }
         internal static void PrintNotification(string str)
         {
-            chatForm.AddMessage(str, new Color(25, 225, 25));
+            chatForm.AddMessage("[API] " + str, new Color(25, 225, 25));
+        }
+
+        [Description("Clears the chat/console.")]
+        static void Clear(object sender, CommandEventArgs e)
+        {
+            chatForm.Clear();
+        }
+        [Description("Lists all commands or gives a description of one.")]
+        static void Help(object sender, CommandEventArgs e)
+        {
+            if (e.length > 1)
+            {
+                PrintError("USAGE: help [<command>]");
+                return;
+            }
+            if (e.length == 1)
+            {
+                foreach (Command c in Command.commands)
+                {
+                    if (c.name.ToLower() == e[0].ToLower())
+                    {
+                        Print(c.name + ": " + c.desc, new Color(25, 225, 25));
+                        return;
+                    }
+                }
+                PrintError("Invalid command.");
+            }
+            else
+            {
+                List<string> commands = new List<string>();
+                foreach (Command c in Command.commands)
+                {
+                    commands.Add(c.name);
+                }
+                commands.Sort();
+                Print("Commands:", new Color(25, 155, 25));
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < commands.Count; i++)
+                {
+                    sb.Append(sb.ToString() == "" ? commands[i] : ", " + commands[i]);
+                }
+                Print(sb.ToString(), new Color(225, 225, 25));
+            }
+        }
+        [Description("Repeats the previously used command.")]
+        static void Repeat(object sender, CommandEventArgs e)
+        {
+            if (Command.lastCommand == null)
+            {
+                PrintError("No last command.");
+                return;
+            }
+            Command.Execute(Command.lastCommand);
+        }
+        [Description("Sends a message to the current server, if applicable.")]
+        static void Say(object sender, CommandEventArgs e)
+        {
+            if (e.plainText == "")
+            {
+                PrintError("No text to send.");
+                return;
+            }
+            if (main.Get("netMode") == 0)
+            {
+                PrintError("Not connected to a server.");
+            }
+            else
+            {
+                Wrapper.netMessage.SendData(25, e.plainText.Substring(1));
+            }
         }
     }
 }

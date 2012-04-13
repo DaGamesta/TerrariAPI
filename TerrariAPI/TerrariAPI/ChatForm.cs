@@ -17,7 +17,7 @@ namespace TerrariAPI
         {
             ta1 = new TextArea(new Position(0, 0), new Size(0, 0));
             ta1.dockStyle = DockStyle.TOP;
-            ta1.sizeFunction = () => new Size(size.width - 12, size.height - 39);
+            ta1.sizeFunction = () => new Size(size.width - 12, size.height - 12 - tb1.size.height);
             Add(ta1);
 
             tb1 = new TextBox(new Position(0, 0), 0);
@@ -28,6 +28,7 @@ namespace TerrariAPI
 
             onUpdate += (o, e) =>
             {
+                text = Wrapper.main.Get("netMode") == 0 ? "Console" : "Chat/Console";
                 if (rectangle.IntersectsMouse())
                 {
                     Client.disableMouse = true;
@@ -54,17 +55,20 @@ namespace TerrariAPI
             TextBox tb = (TextBox)sender;
             if (tb.text != "")
             {
-                if (tb.text[0] == '.')
+                if (Wrapper.main.Get("netMode") == 0)
                 {
-                    Command.Execute(tb.text.Substring(1));
-                }
-                else if (Wrapper.main.Get("netMode") == 0)
-                {
-                    Client.PrintError("Messages may only be sent in multiplayer.");
+                    Command.Execute(tb.text);
                 }
                 else
                 {
-                    Wrapper.netMessage.SendData(25, tb.text);
+                    if (tb.text[0] == '.')
+                    {
+                        Command.Execute(tb.text.Substring(1));
+                    }
+                    else
+                    {
+                        Wrapper.netMessage.SendData(25, tb.text);
+                    }
                 }
                 tb.Clear();
             }
