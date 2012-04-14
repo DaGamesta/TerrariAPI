@@ -7,13 +7,13 @@ using XNAForms.Forms;
 
 namespace TerrariAPI
 {
-    internal sealed class ChatForm : Form
+    internal sealed class ConsoleForm : Form
     {
         private TextArea ta1;
         private TextBox tb1;
 
-        internal ChatForm()
-            : base(new Position(0, 0), new Size(400, 250), "Chat")
+        internal ConsoleForm()
+            : base(new Position(0, 0), new Size(400, 250), "Console")
         {
             ta1 = new TextArea(new Position(0, 0), new Size(0, 0));
             ta1.dockStyle = DockStyle.TOP;
@@ -28,7 +28,6 @@ namespace TerrariAPI
 
             onUpdate += (o, e) =>
             {
-                text = Wrapper.main.Get("netMode") == 0 ? "Console" : "Chat/Console";
                 if (rectangle.IntersectsMouse())
                 {
                     Client.disableMouse = true;
@@ -55,21 +54,7 @@ namespace TerrariAPI
             TextBox tb = (TextBox)sender;
             if (tb.text != "")
             {
-                if (Wrapper.main.Get("netMode") == 0)
-                {
-                    Command.Execute(tb.text);
-                }
-                else
-                {
-                    if (tb.text[0] == '.')
-                    {
-                        Command.Execute(tb.text.Substring(1));
-                    }
-                    else
-                    {
-                        Wrapper.netMessage.SendData(25, tb.text);
-                    }
-                }
+                Command.Execute(tb.text);
                 tb.Clear();
             }
         }

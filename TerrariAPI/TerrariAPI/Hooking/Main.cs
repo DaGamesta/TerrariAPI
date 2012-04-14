@@ -20,6 +20,10 @@ namespace TerrariAPI.Hooking
         /// </summary>
         public dynamic[] items { get { return (dynamic[])Get("item"); } }
         /// <summary>
+        /// Gets the array of players.
+        /// </summary>
+        public dynamic[] players { get { return (dynamic[])Get("player"); } }
+        /// <summary>
         /// Gets if the game is in single player or not.
         /// </summary>
         public bool singlePlayer { get { return Get("netMode") == 0 && !Get("gameMenu"); } }

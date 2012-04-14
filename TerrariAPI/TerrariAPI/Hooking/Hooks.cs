@@ -84,14 +84,11 @@ namespace TerrariAPI.Hooking
                     }
                 }
             }
-            MethodDefinition newText = asm.GetMethod("Main", "NewText");
-            temp = newText.Body.GetILProcessor();
-            tempInstr = newText.Body.Instructions[0];
+            MethodDefinition getInputText = asm.GetMethod("Main", "GetInputText");
+            temp = getInputText.Body.GetILProcessor();
+            tempInstr = getInputText.Body.Instructions[0];
             temp.InsertBefore(tempInstr, temp.Create(OpCodes.Ldarg_0));
-            temp.InsertBefore(tempInstr, temp.Create(OpCodes.Ldarg_1));
-            temp.InsertBefore(tempInstr, temp.Create(OpCodes.Ldarg_2));
-            temp.InsertBefore(tempInstr, temp.Create(OpCodes.Ldarg_3));
-            temp.InsertBefore(tempInstr, temp.Create(OpCodes.Call, mod.Import(GetClientMethod("AddMessage"))));
+            temp.InsertBefore(tempInstr, temp.Create(OpCodes.Call, mod.Import(GetClientMethod("InputText"))));
             temp.InsertBefore(tempInstr, temp.Create(OpCodes.Ret));
             MethodDefinition draw = asm.GetMethod("Main", "Draw");
             temp = draw.Body.GetILProcessor();

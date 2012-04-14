@@ -99,7 +99,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChatForm.cs" />
+    <Compile Include="ConsoleForm.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Commands\DescriptionAttribute.cs" />
     <Compile Include="Hooking\Item.cs" />
