@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil;
 using TerrariAPI.Hooking;
 
 namespace TerrariAPI.Plugins
@@ -13,6 +14,10 @@ namespace TerrariAPI.Plugins
     /// </summary>
     public sealed class PluginEventArgs : EventArgs
     {
+        /// <summary>
+        /// The assembly.
+        /// </summary>
+        public AssemblyDefinition asm;
         /// <summary>
         /// The content manager.
         /// </summary>
@@ -31,6 +36,9 @@ namespace TerrariAPI.Plugins
                     break;
                 case State.DRAW:
                     spriteBatch = Wrapper.main.spriteBatch;
+                    break;
+                case State.HOOK:
+                    asm = Hooks.asm;
                     break;
             }
         }

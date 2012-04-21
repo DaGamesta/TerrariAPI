@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using TerrariAPI.Hooking;
+using TerrariAPI.Plugins;
 
 namespace TerrariAPI
 {
@@ -15,6 +16,7 @@ namespace TerrariAPI
                 {
                     throw new FileNotFoundException("Terraria executable could not be found.");
                 }
+                Plugin.Load();
                 Hooks.Start();
             }
             catch (Exception e)

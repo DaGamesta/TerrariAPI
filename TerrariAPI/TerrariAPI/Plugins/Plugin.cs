@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Mono.Cecil;
+using TerrariAPI.Hooking;
 
 namespace TerrariAPI.Plugins
 {
@@ -34,6 +36,10 @@ namespace TerrariAPI.Plugins
         /// Fires when drawn.
         /// </summary>
         protected event PluginEventHandler onDraw;
+        /// <summary>
+        /// Fires when hooking.
+        /// </summary>
+        protected event PluginEventHandler onHook;
         /// <summary>
         /// Fires when initialized.
         /// </summary>
@@ -93,6 +99,60 @@ namespace TerrariAPI.Plugins
                 }
             }
         }
+        /// <summary>
+        /// Gets a field definition.
+        /// </summary>
+        /// <param name="type">Name of the type the field is in.</param>
+        /// <param name="field">Name of the field.</param>
+        protected static FieldDefinition GetField(string type, string field)
+        {
+            foreach (TypeDefinition td in Hooks.asm.MainModule.Types)
+            {
+                if (td.Name == type)
+                {
+                    foreach (FieldDefinition fd in td.Fields)
+                    {
+                        if (fd.Name == field)
+                        {
+                            return fd;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+        /// <summary>
+        /// Gets a method definition.
+        /// </summary>
+        /// <param name="type">Name of the type the method is in.</param>
+        /// <param name="method">Name of the method.</param>
+        protected static MethodDefinition GetMethod(string type, string method)
+        {
+            foreach (TypeDefinition td in Hooks.asm.MainModule.Types)
+            {
+                if (td.Name == type)
+                {
+                    foreach (MethodDefinition md in td.Methods)
+                    {
+                        if (md.Name == method)
+                        {
+                            return md;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+        internal static void Hook()
+        {
+            foreach (Plugin p in plugins)
+            {
+                if (p.onHook != null)
+                {
+                    p.onHook.Invoke(p, new PluginEventArgs());
+                }
+            }
+        }
         internal static void Initialize()
         {
             foreach (Plugin p in plugins)
@@ -105,22 +165,24 @@ namespace TerrariAPI.Plugins
         }
         internal static void Load()
         {
-            if (!Directory.Exists("Plugins"))
+            foreach (string fName in Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.dll"))
             {
-                Directory.CreateDirectory("Plugins");
-            }
-            foreach (string fName in Directory.EnumerateFiles("Plugins", "*.dll"))
-            {
-                Assembly asm = Assembly.LoadFrom(fName);
-                if (asm != null)
+                try
                 {
-                    foreach (Type t in asm.GetTypes())
+                    Assembly asm = Assembly.LoadFrom(fName);
+                    if (asm != null)
                     {
-                        if (typeof(Plugin).IsAssignableFrom(t) && t.GetConstructor(Type.EmptyTypes) != null)
+                        foreach (Type t in asm.GetTypes())
                         {
-                            plugins.Add((Plugin)Activator.CreateInstance(t));
+                            if (typeof(Plugin).IsAssignableFrom(t) && t.GetConstructor(Type.EmptyTypes) != null)
+                            {
+                                plugins.Add((Plugin)Activator.CreateInstance(t));
+                            }
                         }
                     }
+                }
+                catch (BadImageFormatException)
+                {
                 }
             }
         }

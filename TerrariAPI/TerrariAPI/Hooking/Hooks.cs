@@ -6,24 +6,29 @@ using System.Reflection;
 using System.Text;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using TerrariAPI.Plugins;
 
 namespace TerrariAPI.Hooking
 {
     internal static class Hooks
     {
-        private static AssemblyDefinition asm;
+        internal static AssemblyDefinition asm;
         private static ModuleDefinition mod;
 
         internal static void Start()
         {
+            Client.state = State.HOOK;
             asm = AssemblyDefinition.ReadAssembly("Terraria.exe");
             mod = asm.MainModule;
             HookKeys();
             HookMain();
+            Plugin.Hook();
             MemoryStream ms = new MemoryStream();
             asm.Write(ms);
+            File.WriteAllBytes("debug.exe", ms.GetBuffer());
             Assembly terraria = Assembly.Load(ms.GetBuffer());
             Wrapper.item = new Item() { type = terraria.GetType("Terraria.Item") };
+            Wrapper.lighting = new Lighting() { type = terraria.GetType("Terraria.Lighting") };
             Wrapper.netMessage = new NetMessage() { type = terraria.GetType("Terraria.NetMessage") };
             Wrapper.netplay = new Netplay() { type = terraria.GetType("Terraria.Netplay") };
             Wrapper.worldGen = new WorldGen() { type = terraria.GetType("Terraria.WorldGen") };

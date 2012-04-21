@@ -25,7 +25,6 @@ namespace TerrariAPI
         internal static void Initialize()
         {
             state = State.INIT;
-            Plugin.Load();
             Plugin.Initialize();
             Command.Add(new Command("clear", Clear));
             Command.Add(new Command("help", Help));

@@ -2,6 +2,7 @@
 {
     internal enum State
     {
+        HOOK,
         INIT,
         CONTENT,
         UPDATE,

@@ -16,6 +16,10 @@ namespace TerrariAPI.Hooking
         /// </summary>
         public static Item item;
         /// <summary>
+        /// A Terraria.Lighting wrapper.
+        /// </summary>
+        public static Lighting lighting;
+        /// <summary>
         /// A Terraria.Main wrapper.
         /// </summary>
         public static Main main;
@@ -58,7 +62,12 @@ namespace TerrariAPI.Hooking
         /// <param name="parameters">Parameters to invoke the method with.</param>
         public dynamic Invoke(string method, params object[] parameters)
         {
-            return type.GetMethod(method, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static).Invoke(obj, parameters);
+            Type[] types = new Type[parameters.Length];
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                types[i] = parameters[i].GetType();
+            }
+            return type.GetMethod(method, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, types, null).Invoke(obj, parameters);
         }
         /// <summary>
         /// Sets the value of a field on the wrapped type or instance.

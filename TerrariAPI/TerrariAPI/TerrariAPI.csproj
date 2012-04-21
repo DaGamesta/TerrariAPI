@@ -103,6 +103,7 @@
     <Compile Include="Client.cs" />
     <Compile Include="Commands\DescriptionAttribute.cs" />
     <Compile Include="Hooking\Item.cs" />
+    <Compile Include="Hooking\Lighting.cs" />
     <Compile Include="Hooking\NetMessage.cs" />
     <Compile Include="Hooking\Netplay.cs" />
     <Compile Include="Hooking\WorldGen.cs" />
