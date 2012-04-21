@@ -14,5 +14,13 @@ namespace TerrariAPI.Hooking
             : base((Type)null)
         {
         }
+
+        /// <summary>
+        /// Generates a new item.
+        /// </summary>
+        public dynamic New()
+        {
+            return Activator.CreateInstance(type);
+        }
     }
 }

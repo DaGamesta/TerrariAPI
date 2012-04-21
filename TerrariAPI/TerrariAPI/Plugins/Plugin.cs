@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Mono.Cecil;
+using TerrariAPI.Commands;
 using TerrariAPI.Hooking;
 
 namespace TerrariAPI.Plugins
@@ -58,23 +59,30 @@ namespace TerrariAPI.Plugins
         public abstract int version { get; }
 
         /// <summary>
+        /// Adds a command.
+        /// </summary>
+        protected void AddCommand(Command command)
+        {
+            Command.Add(command);
+        }
+        /// <summary>
         /// Prints a message in a specified color.
         /// </summary>
-        protected static void Print(string str, Color color)
+        protected void Print(string str, Color color)
         {
             Client.Print(str, color);
         }
         /// <summary>
         /// Prints an error.
         /// </summary>
-        protected static void PrintError(string str)
+        protected void PrintError(string str)
         {
             Client.PrintError(str);
         }
         /// <summary>
         /// Prints a notification.
         /// </summary>
-        protected static void PrintNotification(string str)
+        protected void PrintNotification(string str)
         {
             Client.PrintNotification(str);
         }
@@ -104,7 +112,7 @@ namespace TerrariAPI.Plugins
         /// </summary>
         /// <param name="type">Name of the type the field is in.</param>
         /// <param name="field">Name of the field.</param>
-        protected static FieldDefinition GetField(string type, string field)
+        protected FieldDefinition GetField(string type, string field)
         {
             foreach (TypeDefinition td in Hooks.asm.MainModule.Types)
             {
@@ -126,7 +134,7 @@ namespace TerrariAPI.Plugins
         /// </summary>
         /// <param name="type">Name of the type the method is in.</param>
         /// <param name="method">Name of the method.</param>
-        protected static MethodDefinition GetMethod(string type, string method)
+        protected MethodDefinition GetMethod(string type, string method)
         {
             foreach (TypeDefinition td in Hooks.asm.MainModule.Types)
             {

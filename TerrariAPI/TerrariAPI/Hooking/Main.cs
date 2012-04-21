@@ -12,9 +12,17 @@ namespace TerrariAPI.Hooking
     public sealed class Main : Wrapper
     {
         /// <summary>
+        /// Gets the currently selected item.
+        /// </summary>
+        public dynamic currentItem { get { return currPlayer.inventory[currPlayer.selectedItem]; } }
+        /// <summary>
         /// Gets the current player.
         /// </summary>
         public dynamic currPlayer { get { return ((dynamic[])Get("player"))[(int)Get("myPlayer")]; } }
+        /// <summary>
+        /// Gets the array of item names.
+        /// </summary>
+        public string[] itemNames { get { return (string[])Get("itemName"); } }
         /// <summary>
         /// Gets the array of items.
         /// </summary>

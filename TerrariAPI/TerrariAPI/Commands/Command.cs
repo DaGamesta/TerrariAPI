@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using TerrariAPI.Hooking;
 
 namespace TerrariAPI.Commands
 {
@@ -41,10 +42,7 @@ namespace TerrariAPI.Commands
             desc = attrib.description;
             this.name = name;
         }
-        /// <summary>
-        /// Adds a command.
-        /// </summary>
-        public static void Add(Command command)
+        internal static void Add(Command command)
         {
             commands.Add(command);
         }
@@ -67,6 +65,70 @@ namespace TerrariAPI.Commands
                 }
             }
             Client.PrintError("Invalid command.");
+        }
+        /// <summary>
+        /// Gets an item type based on name. If there is an error, -1 is returned; otherwise, the item type is returned.
+        /// </summary>
+        /// <param name="str">Item name to search for.</param>
+        public static int GetItem(string str)
+        {
+            int matches = 0;
+            int ID = -1;
+            for (int i = 0; i < Wrapper.main.itemNames.Length; i++)
+            {
+                if (Wrapper.main.itemNames[i] == str)
+                {
+                    return i;
+                }
+                if (Wrapper.main.itemNames[i].ToLower().Contains(str.ToLower()))
+                {
+                    ID = i;
+                    matches++;
+                }
+            }
+            if (matches == 0)
+            {
+                Client.PrintError("Invalid item.");
+                return -1;
+            }
+            if (matches > 1)
+            {
+                Client.PrintError("Item ambiguity (" + matches + " possible matches).");
+                return -1;
+            }
+            return ID;
+        }
+        /// <summary>
+        /// Gets a player index based on name. If there is an error, -1 is returned; otherwise, the player index is returned.
+        /// </summary>
+        /// <param name="str">Player name to search for.</param>
+        public static int GetPlayer(string str)
+        {
+            int matches = 0;
+            int ID = -1;
+            for (int i = 0; i < Wrapper.main.players.Length; i++)
+            {
+                if (Wrapper.main.players[i].name == str)
+                {
+                    return i;
+                }
+                if (Wrapper.main.players[i].name.ToLower().Contains(str.ToLower()))
+                {
+                    ID = i;
+                    matches++;
+                }
+            }
+            if (matches == 0)
+            {
+                Client.PrintError("Invalid player.");
+                return -1;
+            }
+            if (matches > 1)
+            {
+                Client.PrintError("Player ambiguity (" + matches + " possible matches).");
+                return -1;
+            }
+            return ID;
         }
     }
 }

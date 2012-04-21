@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -15,7 +17,7 @@ namespace TerrariAPI
 {
     internal static class Client
     {
-        private static ConsoleForm chatForm;
+        private static ConsoleForm consoleForm;
         internal static bool disableKeys;
         internal static bool disableMouse;
         internal static Game game;
@@ -31,7 +33,7 @@ namespace TerrariAPI
             Command.Add(new Command("repeat", Repeat));
             Command.Add(new Command("say", Say));
             GUI.Initialize(game);
-            GUI.Add(chatForm = new ConsoleForm());
+            GUI.Add(consoleForm = new ConsoleForm());
         }
         internal static void LoadContent()
         {
@@ -69,15 +71,18 @@ namespace TerrariAPI
         }
         internal static string InputText(string oldStr)
         {
-            main.Set("inputTextEnter", false);
-            oldStr += Input.nextStr;
-            if (Input.TappedKey(Keys.Enter))
+            if (!disableKeys)
             {
-                main.Set("inputTextEnter", true);
-            }
-            if ((Input.active & SpecialKeys.BACK) != 0 && oldStr.Length != 0)
-            {
-                oldStr = oldStr.Substring(0, oldStr.Length - 1);
+                main.Set("inputTextEnter", false);
+                oldStr += Input.nextStr;
+                if (Input.TappedKey(Keys.Enter))
+                {
+                    main.Set("inputTextEnter", true);
+                }
+                if ((Input.active & SpecialKeys.BACK) != 0 && oldStr.Length != 0)
+                {
+                    oldStr = oldStr.Substring(0, oldStr.Length - 1);
+                }
             }
             return oldStr;
         }
@@ -100,21 +105,21 @@ namespace TerrariAPI
 
         internal static void Print(string str, Color color)
         {
-            chatForm.AddMessage(str, color);
+            consoleForm.AddMessage(str, color);
         }
         internal static void PrintError(string str)
         {
-            chatForm.AddMessage(str, new Color(225, 25, 25));
+            consoleForm.AddMessage(str, new Color(225, 25, 25));
         }
         internal static void PrintNotification(string str)
         {
-            chatForm.AddMessage(str, new Color(25, 225, 25));
+            consoleForm.AddMessage(str, new Color(25, 225, 25));
         }
 
         [Description("Clears the chat/console.")]
         static void Clear(object sender, CommandEventArgs e)
         {
-            chatForm.Clear();
+            consoleForm.Clear();
         }
         [Description("Lists all commands or gives a description of one.")]
         static void Help(object sender, CommandEventArgs e)
