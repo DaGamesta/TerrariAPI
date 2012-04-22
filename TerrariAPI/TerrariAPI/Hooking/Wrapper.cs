@@ -11,32 +11,8 @@ namespace TerrariAPI.Hooking
     /// </summary>
     public abstract class Wrapper
     {
-        /// <summary>
-        /// A Terraria.Item wrapper.
-        /// </summary>
-        public static Item item;
-        /// <summary>
-        /// A Terraria.Lighting wrapper.
-        /// </summary>
-        public static Lighting lighting;
-        /// <summary>
-        /// A Terraria.Main wrapper.
-        /// </summary>
-        public static Main main;
-        /// <summary>
-        /// A Terraria.NetMessage wrapper.
-        /// </summary>
-        public static NetMessage netMessage;
-        /// <summary>
-        /// A Terraria.Netplay wrapper.
-        /// </summary>
-        public static Netplay netplay;
         internal object obj = null;
         internal Type type;
-        /// <summary>
-        /// A Terraria.WorldGen wrapper.
-        /// </summary>
-        public static WorldGen worldGen;
 
         internal Wrapper(object obj)
         {

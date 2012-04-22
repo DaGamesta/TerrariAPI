@@ -10,6 +10,8 @@ namespace TerrariAPI.Hooking
     /// </summary>
     public sealed class Lighting : Wrapper
     {
+        internal static Lighting instance;
+
         internal Lighting()
             : base((Type)null)
         {
@@ -21,9 +23,9 @@ namespace TerrariAPI.Hooking
         /// <param name="X">X coordinate of the tile.</param>
         /// <param name="Y">Y coordinate of the tile.</param>
         /// <param name="light">Light intensity.</param>
-        public void LightTile(int X, int Y, float light = 1.0f)
+        public static void LightTile(int X, int Y, float light = 1.0f)
         {
-            Invoke("addLight", X, Y, light);
+            instance.Invoke("addLight", X, Y, light);
         }
         /// <summary>
         /// Lights a tile.
@@ -33,9 +35,9 @@ namespace TerrariAPI.Hooking
         /// <param name="R">R component of the color.</param>
         /// <param name="G">G component of the color.</param>
         /// <param name="B">B component of the color.</param>
-        public void LightTile(int X, int Y, float R, float G, float B)
+        public static void LightTile(int X, int Y, float R, float G, float B)
         {
-            Invoke("addLight", X, Y, R, G, B);
+            instance.Invoke("addLight", X, Y, R, G, B);
         }
     }
 }

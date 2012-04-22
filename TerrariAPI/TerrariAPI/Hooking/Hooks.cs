@@ -25,21 +25,22 @@ namespace TerrariAPI.Hooking
             Plugin.Hook();
             MemoryStream ms = new MemoryStream();
             asm.Write(ms);
-            File.WriteAllBytes("debug.exe", ms.GetBuffer());
             Assembly terraria = Assembly.Load(ms.GetBuffer());
-            Wrapper.item = new Item() { type = terraria.GetType("Terraria.Item") };
-            Wrapper.lighting = new Lighting() { type = terraria.GetType("Terraria.Lighting") };
-            Wrapper.netMessage = new NetMessage() { type = terraria.GetType("Terraria.NetMessage") };
-            Wrapper.netplay = new Netplay() { type = terraria.GetType("Terraria.Netplay") };
-            Wrapper.worldGen = new WorldGen() { type = terraria.GetType("Terraria.WorldGen") };
-            Wrapper.main = new Main(terraria.GetType("Terraria.Main").GetConstructor(new Type[] { }).Invoke(null));
+            
+            Item.instance = new Item() { type = terraria.GetType("Terraria.Item") };
+            Lighting.instance = new Lighting() { type = terraria.GetType("Terraria.Lighting") };
+            NetMessage.instance = new NetMessage() { type = terraria.GetType("Terraria.NetMessage") };
+            Netplay.instance = new Netplay() { type = terraria.GetType("Terraria.Netplay") };
+            WorldGen.instance = new WorldGen() { type = terraria.GetType("Terraria.WorldGen") };
+
+            Main.instance = new Main(terraria.GetType("Terraria.Main").GetConstructor(new Type[] { }).Invoke(null));
             try
             {
-                Wrapper.main.Invoke("Run");
+                Main.Run();
             }
             finally
             {
-                Wrapper.main.Invoke("Dispose");
+                Main.Dispose();
             }
         }
         private static void HookKeys()

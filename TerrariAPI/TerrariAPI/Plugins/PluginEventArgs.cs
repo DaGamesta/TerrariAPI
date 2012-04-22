@@ -35,7 +35,7 @@ namespace TerrariAPI.Plugins
                     content = Client.game.Content;
                     break;
                 case State.DRAW:
-                    spriteBatch = Wrapper.main.spriteBatch;
+                    spriteBatch = Main.spriteBatch;
                     break;
                 case State.HOOK:
                     asm = Hooks.asm;

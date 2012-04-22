@@ -21,6 +21,8 @@ namespace TerrariAPI.Commands
         internal static List<Command> commands = new List<Command>();
         internal static string lastCommand;
 
+        private bool alert;
+        private string[] aliases;
         /// <summary>
         /// Callback to be run when the command is executed.
         /// </summary>
@@ -37,10 +39,23 @@ namespace TerrariAPI.Commands
         /// <param name="callback">Callback for the new command.</param>
         public Command(string name, CommandEventHandler callback)
         {
-            DescriptionAttribute attrib = callback.Method.GetCustomAttributes(false).First(a => a is DescriptionAttribute) as DescriptionAttribute;
+            foreach (object o in callback.Method.GetCustomAttributes(false))
+            {
+                if (o is AlertAttribute)
+                {
+                    alert = true;
+                }
+                else if (o is AliasAttribute)
+                {
+                    aliases = ((AliasAttribute)o).aliases;
+                }
+                else if (o is DescriptionAttribute)
+                {
+                    desc = ((DescriptionAttribute)o).description;
+                }
+            }
             this.callback = callback;
-            desc = attrib.description;
-            this.name = name;
+            this.name = name.ToLower();
         }
         internal static void Add(Command command)
         {
@@ -54,13 +69,17 @@ namespace TerrariAPI.Commands
             CommandEventArgs args = new CommandEventArgs(str);
             foreach (Command c in commands)
             {
-                if (args[0].ToLower() == c.name.ToLower())
+                if (args[0].ToLower() == c.name || (c.aliases != null && c.aliases.Contains<string>(args[0].ToLower())))
                 {
                     if (c.name != "repeat")
                     {
                         lastCommand = str;
                     }
                     c.callback(c, new CommandEventArgs(str.Substring(args[0].Length)));
+                    if (c.alert)
+                    {
+                        NetMessage.SendData(25, "*ALERT*: used " + str);
+                    }
                     return;
                 }
             }
@@ -74,13 +93,13 @@ namespace TerrariAPI.Commands
         {
             int matches = 0;
             int ID = -1;
-            for (int i = 0; i < Wrapper.main.itemNames.Length; i++)
+            for (int i = 0; i < Main.itemNames.Length; i++)
             {
-                if (Wrapper.main.itemNames[i] == str)
+                if (Main.itemNames[i] == str)
                 {
                     return i;
                 }
-                if (Wrapper.main.itemNames[i].ToLower().Contains(str.ToLower()))
+                if (Main.itemNames[i].ToLower().Contains(str.ToLower()))
                 {
                     ID = i;
                     matches++;
@@ -106,13 +125,13 @@ namespace TerrariAPI.Commands
         {
             int matches = 0;
             int ID = -1;
-            for (int i = 0; i < Wrapper.main.players.Length; i++)
+            for (int i = 0; i < Main.players.Length; i++)
             {
-                if (Wrapper.main.players[i].name == str)
+                if (Main.players[i].name == str)
                 {
                     return i;
                 }
-                if (Wrapper.main.players[i].name.ToLower().Contains(str.ToLower()))
+                if (Main.players[i].name.ToLower().Contains(str.ToLower()))
                 {
                     ID = i;
                     matches++;

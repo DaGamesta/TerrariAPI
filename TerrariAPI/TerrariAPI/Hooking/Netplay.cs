@@ -10,6 +10,8 @@ namespace TerrariAPI.Hooking
     /// </summary>
     public sealed class Netplay : Wrapper
     {
+        internal static Netplay instance;
+
         internal Netplay()
             : base((Type)null)
         {

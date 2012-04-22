@@ -21,7 +21,6 @@ namespace TerrariAPI
         internal static bool disableKeys;
         internal static bool disableMouse;
         internal static Game game;
-        private static Main main { get { return Wrapper.main; } }
         internal static State state;
 
         internal static void Initialize()
@@ -46,7 +45,7 @@ namespace TerrariAPI
             GUI.BindCursor(CursorType.RESIZE_DIAGONAL, content.Load<Texture2D>("TerrariAPI/Cursors/ResizeDiag"));
             GUI.BindCursor(CursorType.TEXT, content.Load<Texture2D>("TerrariAPI/Cursors/Text"));
             GUI.BindFont(content.Load<SpriteFont>("TerrariAPI/Font"));
-            main.Set("cursorTexture", new Texture2D(game.GraphicsDevice, 1, 1));
+            Main.cursorTexture = new Texture2D(game.GraphicsDevice, 1, 1);
             Plugin.Content();
         }
         internal static void Update()
@@ -59,26 +58,26 @@ namespace TerrariAPI
         {
             if (disableKeys)
             {
-                main.Set("keyState", new KeyboardState());
+                Main.keyState = new KeyboardState();
             }
         }
         internal static void DMouse()
         {
             if (disableMouse)
             {
-                main.Set("mouseState", new MouseState(0, 0, Mouse.GetState().ScrollWheelValue, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released));
-                main.Set("oldMouseState", new MouseState(0, 0, Mouse.GetState().ScrollWheelValue, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released));
+                Main.mouseState =  new MouseState(0, 0, Mouse.GetState().ScrollWheelValue, 0, 0, 0, 0, 0);
+                Main.oldMouseState = new MouseState(0, 0, Mouse.GetState().ScrollWheelValue, 0, 0, 0, 0, 0);
             }
         }
         internal static string InputText(string oldStr)
         {
+            Main.inputTextEnter = false;
             if (!disableKeys)
             {
-                main.Set("inputTextEnter", false);
                 oldStr += Input.nextStr;
                 if (Input.TappedKey(Keys.Enter))
                 {
-                    main.Set("inputTextEnter", true);
+                    Main.inputTextEnter = true;
                 }
                 if ((Input.active & SpecialKeys.BACK) != 0 && oldStr.Length != 0)
                 {
@@ -94,10 +93,10 @@ namespace TerrariAPI
         internal static void Draw()
         {
             state = State.DRAW;
-            main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
             Plugin.Draw();
-            main.spriteBatch.End();
-            GUI.Draw(main.spriteBatch);
+            Main.spriteBatch.End();
+            GUI.Draw(Main.spriteBatch);
         }
 
         internal static void Print(string str, Color color)
@@ -112,12 +111,13 @@ namespace TerrariAPI
         {
             consoleForm.AddMessage(str, new Color(25, 225, 25));
         }
-
+        [Alias("clr")]
         [Description("Clears the chat/console.")]
         static void Clear(object sender, CommandEventArgs e)
         {
             consoleForm.Clear();
         }
+        [Alias("h")]
         [Description("Lists all commands or gives a description of one.")]
         static void Help(object sender, CommandEventArgs e)
         {
@@ -155,6 +155,7 @@ namespace TerrariAPI
                 Print(sb.ToString(), new Color(225, 225, 25));
             }
         }
+        [Alias("ns")]
         [Description("Directly sends network data.")]
         static void NetSend(object sender, CommandEventArgs e)
         {
@@ -195,10 +196,11 @@ namespace TerrariAPI
             }
             finally
             {
-                Wrapper.netMessage.SendData(packet, str, num1, num2, num3, num4, num5);
+                NetMessage.SendData(packet, str, num1, num2, num3, num4, num5);
                 PrintNotification("Sent " + packet + ", " + (str == "" ? "\"\"" : str) + ", " + num1 + ", " + num2 + ", " + num3 + ", " + num4 + ", " + num5);
             }
         }
+        [Alias("r")]
         [Description("Repeats the previously used command.")]
         static void Repeat(object sender, CommandEventArgs e)
         {
@@ -217,13 +219,13 @@ namespace TerrariAPI
                 PrintError("No text to send.");
                 return;
             }
-            if (main.Get("netMode") == 0)
+            if (Main.multiplayer)
             {
-                PrintError("Not connected to a server.");
+                NetMessage.SendData(25, e.plainText.Substring(1));
             }
             else
             {
-                Wrapper.netMessage.SendData(25, e.plainText.Substring(1));
+                PrintError("Not connected to a server.");
             }
         }
     }

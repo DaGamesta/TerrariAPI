@@ -99,6 +99,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\AlertAttribute.cs" />
+    <Compile Include="Commands\AliasAttribute.cs" />
     <Compile Include="ConsoleForm.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Commands\DescriptionAttribute.cs" />
