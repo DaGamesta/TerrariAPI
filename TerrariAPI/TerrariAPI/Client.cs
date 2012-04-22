@@ -30,6 +30,7 @@ namespace TerrariAPI
             Plugin.Initialize();
             Command.Add(new Command("clear", Clear));
             Command.Add(new Command("help", Help));
+            Command.Add(new Command("netsend", NetSend));
             Command.Add(new Command("repeat", Repeat));
             Command.Add(new Command("say", Say));
             GUI.Initialize(game);
@@ -122,7 +123,7 @@ namespace TerrariAPI
         {
             if (e.length > 1)
             {
-                PrintError("USAGE: help [<command>]");
+                PrintError("Syntax: help [<command>]");
                 return;
             }
             if (e.length == 1)
@@ -152,6 +153,50 @@ namespace TerrariAPI
                     sb.Append(sb.ToString() == "" ? commands[i] : ", " + commands[i]);
                 }
                 Print(sb.ToString(), new Color(225, 225, 25));
+            }
+        }
+        [Description("Directly sends network data.")]
+        static void NetSend(object sender, CommandEventArgs e)
+        {
+            if (e.length < 1 || e.length > 7)
+            {
+                PrintError("Syntax: netsend <packet ID> [<arg1>] [<arg2>] [<arg3>] [<arg4>] [<arg5>] [<arg6>]");
+                return;
+            }
+            int packet;
+            if (!int.TryParse(e[0], out packet))
+            {
+                PrintError("Invalid packet ID.");
+                return;
+            }
+            int num1 = 0, num5 = 0;
+            float num2 = 0, num3 = 0, num4 = 0;
+            string str = "";
+            try
+            {
+                if (!int.TryParse(e[2], out num1))
+                {
+                    PrintError("Invalid integer.");
+                    return;
+                }
+                if (!float.TryParse(e[3], out num2) || !float.TryParse(e[4], out num3) || !float.TryParse(e[5], out num4))
+                {
+                    PrintError("Invalid float.");
+                    return;
+                }
+                if (!int.TryParse(e[6], out num5))
+                {
+                    PrintError("Invalid integer.");
+                    return;
+                }
+            }
+            catch (IndexOutOfRangeException)
+            {
+            }
+            finally
+            {
+                Wrapper.netMessage.SendData(packet, str, num1, num2, num3, num4, num5);
+                PrintNotification("Sent " + packet + ", " + (str == "" ? "\"\"" : str) + ", " + num1 + ", " + num2 + ", " + num3 + ", " + num4 + ", " + num5);
             }
         }
         [Description("Repeats the previously used command.")]

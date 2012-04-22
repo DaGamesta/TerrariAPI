@@ -25,6 +25,7 @@ namespace TerrariAPI.Hooking
             Plugin.Hook();
             MemoryStream ms = new MemoryStream();
             asm.Write(ms);
+            File.WriteAllBytes("debug.exe", ms.GetBuffer());
             Assembly terraria = Assembly.Load(ms.GetBuffer());
             Wrapper.item = new Item() { type = terraria.GetType("Terraria.Item") };
             Wrapper.lighting = new Lighting() { type = terraria.GetType("Terraria.Lighting") };

@@ -180,30 +180,35 @@ namespace TerrariAPI.Plugins
             }
             foreach (string fName in Directory.EnumerateFiles("Plugins", "*.dll"))
             {
-                try
+                LoadFrom(fName);
+            }
+        }
+        internal static void LoadFrom(string path, bool noCopy = false)
+        {
+            try
+            {
+                Assembly asm = Assembly.LoadFrom(path);
+                foreach (Type t in asm.GetTypes())
                 {
-                    Assembly asm = Assembly.LoadFrom(fName);
-                    if (asm != null)
+                    if (typeof(Plugin).IsAssignableFrom(t) && t.GetConstructor(new Type[] { }) != null)
                     {
-                        foreach (Type t in asm.GetTypes())
+                        Plugin p = (Plugin)Activator.CreateInstance(t);
+                        p.fileName = path.Substring(path.LastIndexOf('\\') + 1);
+                        if (!noCopy && p.onHook != null)
                         {
-                            if (typeof(Plugin).IsAssignableFrom(t) && t.GetConstructor(Type.EmptyTypes) != null)
-                            {
-                                Plugin p = (Plugin)Activator.CreateInstance(t);
-                                p.fileName = fName.Substring(fName.IndexOf('\\') + 1);
-                                plugins.Add(p);
-                                if (p.onHook != null && !File.Exists(p.fileName))
-                                {
-                                    File.Delete(p.fileName);
-                                    File.Copy(fName, p.fileName);
-                                }
-                            }
+                            File.Delete(p.fileName);
+                            File.Copy(path, p.fileName);
+                            LoadFrom(p.fileName, true);
+                        }
+                        else
+                        {
+                            plugins.Add(p);
                         }
                     }
                 }
-                catch (BadImageFormatException)
-                {
-                }
+            }
+            catch (BadImageFormatException)
+            {
             }
         }
         internal static void Unload()
