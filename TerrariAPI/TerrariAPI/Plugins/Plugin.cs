@@ -25,6 +25,7 @@ namespace TerrariAPI.Plugins
         /// Gets the author of the plugin.
         /// </summary>
         public abstract string author { get; }
+        internal string fileName;
         /// <summary>
         /// Gets the name of the plugin.
         /// </summary>
@@ -173,7 +174,11 @@ namespace TerrariAPI.Plugins
         }
         internal static void Load()
         {
-            foreach (string fName in Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.dll"))
+            if (!Directory.Exists("Plugins"))
+            {
+                Directory.CreateDirectory("Plugins");
+            }
+            foreach (string fName in Directory.EnumerateFiles("Plugins", "*.dll"))
             {
                 try
                 {
@@ -184,7 +189,14 @@ namespace TerrariAPI.Plugins
                         {
                             if (typeof(Plugin).IsAssignableFrom(t) && t.GetConstructor(Type.EmptyTypes) != null)
                             {
-                                plugins.Add((Plugin)Activator.CreateInstance(t));
+                                Plugin p = (Plugin)Activator.CreateInstance(t);
+                                p.fileName = fName.Substring(fName.IndexOf('\\') + 1);
+                                plugins.Add(p);
+                                if (p.onHook != null && !File.Exists(p.fileName))
+                                {
+                                    File.Delete(p.fileName);
+                                    File.Copy(fName, p.fileName);
+                                }
                             }
                         }
                     }
@@ -196,13 +208,14 @@ namespace TerrariAPI.Plugins
         }
         internal static void Unload()
         {
-            foreach (Plugin p in plugins)
+            for (int i = 0; i < plugins.Count; i++)
             {
-                if (p.onUnload != null)
+                if (plugins[i].onUnload != null)
                 {
-                    p.onUnload.Invoke(p, new PluginEventArgs());
+                    plugins[i].onUnload.Invoke(plugins[i], new PluginEventArgs());
                 }
             }
+            plugins.Clear();
         }
         internal static void Update()
         {

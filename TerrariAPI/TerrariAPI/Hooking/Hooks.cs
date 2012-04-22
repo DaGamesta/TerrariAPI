@@ -25,7 +25,6 @@ namespace TerrariAPI.Hooking
             Plugin.Hook();
             MemoryStream ms = new MemoryStream();
             asm.Write(ms);
-            File.WriteAllBytes("debug.exe", ms.GetBuffer());
             Assembly terraria = Assembly.Load(ms.GetBuffer());
             Wrapper.item = new Item() { type = terraria.GetType("Terraria.Item") };
             Wrapper.lighting = new Lighting() { type = terraria.GetType("Terraria.Lighting") };
@@ -33,29 +32,45 @@ namespace TerrariAPI.Hooking
             Wrapper.netplay = new Netplay() { type = terraria.GetType("Terraria.Netplay") };
             Wrapper.worldGen = new WorldGen() { type = terraria.GetType("Terraria.WorldGen") };
             Wrapper.main = new Main(terraria.GetType("Terraria.Main").GetConstructor(new Type[] { }).Invoke(null));
-            Wrapper.main.Invoke("Run");
+            try
+            {
+                Wrapper.main.Invoke("Run");
+            }
+            finally
+            {
+                Wrapper.main.Invoke("Dispose");
+            }
         }
         private static void HookKeys()
         {
+            #region .cctor
             MethodDefinition ctor = asm.GetMethod("keyBoardInput", ".cctor");
             ILProcessor ctorp = ctor.Body.GetILProcessor();
             ctorp.InsertBefore(ctor.Body.Instructions[0], ctorp.Create(OpCodes.Ret));
+            #endregion
         }
         private static void HookMain()
         {
             ILProcessor temp = null;
             Instruction tempInstr = null;
+            #region .ctor
             MethodDefinition ctor = asm.GetMethod("Main", ".ctor");
             temp = ctor.Body.GetILProcessor();
             tempInstr = ctor.Body.Instructions[0];
             temp.InsertBefore(tempInstr, temp.Create(OpCodes.Ldarg_0));
             temp.InsertBefore(tempInstr, temp.Create(OpCodes.Stsfld, mod.Import(typeof(Client).GetField("game", BindingFlags.NonPublic | BindingFlags.Static))));
+            #endregion
+            #region Initialize
             MethodDefinition initialize = asm.GetMethod("Main", "Initialize");
             temp = initialize.Body.GetILProcessor();
             temp.InsertBefore(initialize.Body.Instructions[initialize.Body.Instructions.Count - 1], temp.Create(OpCodes.Call, mod.Import(GetClientMethod("Initialize"))));
+            #endregion
+            #region Load content
             MethodDefinition loadContent = asm.GetMethod("Main", "LoadContent");
             temp = loadContent.Body.GetILProcessor();
             temp.InsertBefore(loadContent.Body.Instructions[loadContent.Body.Instructions.Count - 1], temp.Create(OpCodes.Call, mod.Import(GetClientMethod("LoadContent"))));
+            #endregion
+            #region Update
             MethodDefinition update = asm.GetMethod("Main", "Update");
             temp = update.Body.GetILProcessor();
             temp.InsertBefore(update.Body.Instructions[0], temp.Create(OpCodes.Call, mod.Import(GetClientMethod("Update"))));
@@ -89,12 +104,16 @@ namespace TerrariAPI.Hooking
                     }
                 }
             }
+            #endregion
+            #region Input text
             MethodDefinition getInputText = asm.GetMethod("Main", "GetInputText");
             temp = getInputText.Body.GetILProcessor();
             tempInstr = getInputText.Body.Instructions[0];
             temp.InsertBefore(tempInstr, temp.Create(OpCodes.Ldarg_0));
             temp.InsertBefore(tempInstr, temp.Create(OpCodes.Call, mod.Import(GetClientMethod("InputText"))));
             temp.InsertBefore(tempInstr, temp.Create(OpCodes.Ret));
+            #endregion
+            #region Draw
             MethodDefinition draw = asm.GetMethod("Main", "Draw");
             temp = draw.Body.GetILProcessor();
             var onDraw = mod.Import(GetClientMethod("Draw"));
@@ -115,9 +134,7 @@ namespace TerrariAPI.Hooking
                     }
                 }
             }
-            MethodDefinition exit = asm.GetMethod("Main", "QuitGame");
-            temp = exit.Body.GetILProcessor();
-            temp.InsertBefore(exit.Body.Instructions[0], temp.Create(OpCodes.Call, mod.Import(GetClientMethod("Exit"))));
+            #endregion
         }
 
         private static MethodInfo GetClientMethod(string name)

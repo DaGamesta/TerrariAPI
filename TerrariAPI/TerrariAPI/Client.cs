@@ -98,10 +98,6 @@ namespace TerrariAPI
             main.spriteBatch.End();
             GUI.Draw(main.spriteBatch);
         }
-        internal static void Exit()
-        {
-            Plugin.Unload();
-        }
 
         internal static void Print(string str, Color color)
         {

@@ -26,6 +26,7 @@ namespace TerrariAPI
                     writer.WriteLine("[{0}]:\n{1}\n", DateTime.Now, e);
                 }
             }
+            Plugin.Unload();
         }
     }
 }
