@@ -17,6 +17,26 @@ namespace TerrariAPI.Hooking
         {
         }
         /// <summary>
+        /// Invokes the PlaceTile method.
+        /// </summary>
+        /// <param name="X">X position of the tile.</param>
+        /// <param name="Y">Y position of the tile.</param>
+        /// <param name="type">Type of the tile.</param>
+        public static void PlaceTile(int X, int Y, byte type)
+        {
+            instance.Invoke("PlaceTile", X, Y, type, false, true, -1, 0);
+        }
+        /// <summary>
+        /// Invokes the PlaceWall method.
+        /// </summary>
+        /// <param name="X">X position of the wall.</param>
+        /// <param name="Y">Y position of the wall.</param>
+        /// <param name="type">Type of the wall.</param>
+        public static void PlaceWall(int X, int Y, int type)
+        {
+            instance.Invoke("PlaceWall", X, Y, type, false);
+        }
+        /// <summary>
         /// Invokes the SquareTileFrame method.
         /// </summary>
         /// <param name="X">X position of the tile.</param>

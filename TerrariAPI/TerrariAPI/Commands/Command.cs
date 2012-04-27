@@ -86,6 +86,16 @@ namespace TerrariAPI.Commands
             Client.PrintError("Invalid command.");
         }
         /// <summary>
+        /// Executes a list of strings as commands.
+        /// </summary>
+        public static void Execute(List<string> strs)
+        {
+            foreach (string s in strs)
+            {
+                Execute(s);
+            }
+        }
+        /// <summary>
         /// Gets an item type based on name. If there is an error, -1 is returned; otherwise, the item type is returned.
         /// </summary>
         /// <param name="str">Item name to search for.</param>

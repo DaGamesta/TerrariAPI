@@ -17,21 +17,27 @@ namespace TerrariAPI
 {
     internal static class Client
     {
+        internal static List<Binding> bindings = new List<Binding>();
         private static ConsoleForm consoleForm;
         internal static bool disableKeys;
         internal static bool disableMouse;
         internal static Game game;
+        private static Keys[] lastPressedKeys = Keyboard.GetState().GetPressedKeys();
+        private static Keys[] pressedKeys = Keyboard.GetState().GetPressedKeys();
         internal static State state;
 
         internal static void Initialize()
         {
             state = State.INIT;
-            Plugin.Initialize();
+            Binding.Load("bindings.txt");
+            Command.Add(new Command("addmacro", AddMacro));
             Command.Add(new Command("clear", Clear));
             Command.Add(new Command("help", Help));
+            Command.Add(new Command("macro", Macro));
             Command.Add(new Command("netsend", NetSend));
             Command.Add(new Command("repeat", Repeat));
             Command.Add(new Command("say", Say));
+            Plugin.Initialize();
             GUI.Initialize(game);
             GUI.Add(consoleForm = new ConsoleForm());
         }
@@ -51,6 +57,19 @@ namespace TerrariAPI
         internal static void Update()
         {
             state = State.UPDATE;
+            lastPressedKeys = pressedKeys;
+            pressedKeys = Keyboard.GetState().GetPressedKeys();
+            if (!disableKeys)
+            {
+                foreach (Binding b in bindings)
+                {
+                    if (!lastPressedKeys.Contains<Keys>(b.key) && pressedKeys.Contains<Keys>(b.key))
+                    {
+                        Command.Execute(b.commands);
+                    }
+                }
+            }
+
             Plugin.Update();
             GUI.Update();
         }
@@ -111,6 +130,20 @@ namespace TerrariAPI
         {
             consoleForm.AddMessage(str, new Color(25, 225, 25));
         }
+
+        [Alias("am")]
+        [Description("Creates a new macro, and opens it for editing.")]
+        static void AddMacro(object sender, CommandEventArgs e)
+        {
+            if (e.length != 1)
+            {
+                PrintError("Syntax: addmacro <name>");
+                return;
+            }
+            FileStream fs = File.Create(e[0] + ".macro");
+            fs.Dispose();
+            System.Diagnostics.Process.Start("notepad.exe", e[0] + ".macro");
+        }
         [Alias("clr")]
         [Description("Clears the chat/console.")]
         static void Clear(object sender, CommandEventArgs e)
@@ -154,6 +187,35 @@ namespace TerrariAPI
                 }
                 Print(sb.ToString(), new Color(225, 225, 25));
             }
+        }
+        [Alias("m")]
+        [Description("Runs a macro.")]
+        static void Macro(object sender, CommandEventArgs e)
+        {
+            if (e.length == 0)
+            {
+                PrintError("Syntax: macro <name> [<args>]");
+                return;
+            }
+            if (!File.Exists(e[0] + ".macro"))
+            {
+                PrintError("Invalid macro.");
+                return;
+            }
+            string[] args = new string[e.length - 1];
+            for (int i = 0; i < args.Length; i++)
+            {
+                args[i] = e[i + 1];
+            }
+            using (StreamReader reader = new StreamReader(e[0] + ".macro"))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    Command.Execute(string.Format(line, args));
+                }
+            }
+            PrintNotification("Executed macro '" + e[0] + ".'");
         }
         [Alias("ns")]
         [Description("Directly sends network data.")]

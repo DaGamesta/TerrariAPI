@@ -211,6 +211,13 @@ namespace TerrariAPI.Plugins
             {
             }
         }
+        /// <summary>
+        /// Creates the string representation of the plugin.
+        /// </summary>
+        public override string ToString()
+        {
+            return name + " v" + version;
+        }
         internal static void Unload()
         {
             for (int i = 0; i < plugins.Count; i++)
