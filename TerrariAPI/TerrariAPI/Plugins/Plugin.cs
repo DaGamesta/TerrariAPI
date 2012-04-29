@@ -108,50 +108,6 @@ namespace TerrariAPI.Plugins
                 }
             }
         }
-        /// <summary>
-        /// Gets a field definition.
-        /// </summary>
-        /// <param name="type">Name of the type the field is in.</param>
-        /// <param name="field">Name of the field.</param>
-        protected FieldDefinition GetField(string type, string field)
-        {
-            foreach (TypeDefinition td in Hooks.asm.MainModule.Types)
-            {
-                if (td.Name == type)
-                {
-                    foreach (FieldDefinition fd in td.Fields)
-                    {
-                        if (fd.Name == field)
-                        {
-                            return fd;
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-        /// <summary>
-        /// Gets a method definition.
-        /// </summary>
-        /// <param name="type">Name of the type the method is in.</param>
-        /// <param name="method">Name of the method.</param>
-        protected MethodDefinition GetMethod(string type, string method)
-        {
-            foreach (TypeDefinition td in Hooks.asm.MainModule.Types)
-            {
-                if (td.Name == type)
-                {
-                    foreach (MethodDefinition md in td.Methods)
-                    {
-                        if (md.Name == method)
-                        {
-                            return md;
-                        }
-                    }
-                }
-            }
-            return null;
-        }
         internal static void Hook()
         {
             foreach (Plugin p in plugins)

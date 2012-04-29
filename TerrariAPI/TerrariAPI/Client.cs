@@ -59,7 +59,7 @@ namespace TerrariAPI
             state = State.UPDATE;
             lastPressedKeys = pressedKeys;
             pressedKeys = Keyboard.GetState().GetPressedKeys();
-            if (!disableKeys)
+            if (!disableKeys && !Main.chatMode)
             {
                 foreach (Binding b in bindings)
                 {
@@ -84,7 +84,7 @@ namespace TerrariAPI
         {
             if (disableMouse)
             {
-                Main.mouseState =  new MouseState(0, 0, Mouse.GetState().ScrollWheelValue, 0, 0, 0, 0, 0);
+                Main.mouseState = new MouseState(0, 0, Mouse.GetState().ScrollWheelValue, 0, 0, 0, 0, 0);
                 Main.oldMouseState = new MouseState(0, 0, Mouse.GetState().ScrollWheelValue, 0, 0, 0, 0, 0);
             }
         }

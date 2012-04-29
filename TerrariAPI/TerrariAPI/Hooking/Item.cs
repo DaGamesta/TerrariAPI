@@ -36,7 +36,6 @@ namespace TerrariAPI.Hooking
         /// <param name="stack">Stack for the item.</param>
         /// <param name="broadcast">Whether or not to broadcast the item creation.</param>
         /// <param name="prefix">Prefix for the item.</param>
-        /// <returns></returns>
         public static int NewItem(int X, int Y, int width, int height, int type, int stack = 1, bool broadcast = false, int prefix = 0)
         {
             return instance.Invoke("NewItem", X, Y, width, height, type, stack, broadcast, prefix);

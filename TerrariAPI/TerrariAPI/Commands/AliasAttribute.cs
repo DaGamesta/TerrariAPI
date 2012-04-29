@@ -8,7 +8,7 @@ namespace TerrariAPI.Commands
     /// <summary>
     /// Represents an alias attribute.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
     public sealed class AliasAttribute : Attribute
     {
         /// <summary>

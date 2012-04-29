@@ -8,7 +8,7 @@ namespace TerrariAPI.Commands
     /// <summary>
     /// Represents an alert attribute.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
     public sealed class AlertAttribute : Attribute
     {
         /// <summary>

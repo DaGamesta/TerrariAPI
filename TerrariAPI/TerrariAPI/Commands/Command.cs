@@ -64,14 +64,14 @@ namespace TerrariAPI.Commands
         /// <summary>
         /// Executes a string as a command.
         /// </summary>
-        public static void Execute(string str)
+        public static void Execute(string str, bool repeat = true)
         {
             CommandEventArgs args = new CommandEventArgs(str);
             foreach (Command c in commands)
             {
                 if (args[0].ToLower() == c.name || (c.aliases != null && c.aliases.Contains<string>(args[0].ToLower())))
                 {
-                    if (c.name != "repeat")
+                    if (c.name != "repeat" && repeat)
                     {
                         lastCommand = str;
                     }
@@ -92,7 +92,7 @@ namespace TerrariAPI.Commands
         {
             foreach (string s in strs)
             {
-                Execute(s);
+                Execute(s, false);
             }
         }
         /// <summary>

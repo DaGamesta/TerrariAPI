@@ -37,6 +37,16 @@ namespace TerrariAPI.Hooking
             instance.Invoke("PlaceWall", X, Y, type, false);
         }
         /// <summary>
+        /// Sets the genRand field to a new RNG.
+        /// </summary>
+        public static void Random()
+        {
+            if (instance.Get("genRand") == null)
+            {
+                instance.Set("genRand", new Random());
+            }
+        }
+        /// <summary>
         /// Invokes the SquareTileFrame method.
         /// </summary>
         /// <param name="X">X position of the tile.</param>

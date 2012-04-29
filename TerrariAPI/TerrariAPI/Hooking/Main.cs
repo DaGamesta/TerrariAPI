@@ -14,6 +14,7 @@ namespace TerrariAPI.Hooking
     public sealed class Main : Wrapper
     {
         internal static Main instance;
+        internal static bool chatMode { get { return instance.Get("chatMode"); } }
         /// <summary>
         /// Gets the currently selected item.
         /// </summary>

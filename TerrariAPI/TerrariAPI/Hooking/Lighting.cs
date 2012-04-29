@@ -12,6 +12,19 @@ namespace TerrariAPI.Hooking
     {
         internal static Lighting instance;
 
+        /// <summary>
+        /// Gets or sets the negLight field.
+        /// </summary>
+        public static float negLight { get { return instance.Get("negLight"); } set { instance.Set("negLight", value); } }
+        /// <summary>
+        /// Gets or sets the wetLightR field.
+        /// </summary>
+        public static float wetLightR { get { return instance.Get("wetLightR"); } set { instance.Set("wetLightR", value); } }
+        /// <summary>
+        /// Gets or sets the negLight2 field.
+        /// </summary>
+        public static float negLight2 { get { return instance.Get("negLight2"); } set { instance.Set("negLight2", value); } }
+
         internal Lighting()
             : base((Type)null)
         {
