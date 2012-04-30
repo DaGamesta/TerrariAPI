@@ -37,9 +37,9 @@ namespace TerrariAPI
             Command.Add(new Command("netsend", NetSend));
             Command.Add(new Command("repeat", Repeat));
             Command.Add(new Command("say", Say));
-            Plugin.Initialize();
             GUI.Initialize(game);
             GUI.Add(consoleForm = new ConsoleForm());
+            Plugin.Initialize();
         }
         internal static void LoadContent()
         {
@@ -69,9 +69,13 @@ namespace TerrariAPI
                     }
                 }
             }
+            if (pressedKeys.Contains<Keys>(Keys.Tab) && !lastPressedKeys.Contains<Keys>(Keys.Tab))
+            {
+                consoleForm.Toggle();
+            }
 
-            Plugin.Update();
             GUI.Update();
+            Plugin.Update();
         }
         internal static void DKeys()
         {
@@ -108,6 +112,7 @@ namespace TerrariAPI
         internal static void Update2()
         {
             disableKeys = disableMouse = false;
+            Plugin.Update2();
         }
         internal static void Draw()
         {

@@ -14,7 +14,23 @@ namespace TerrariAPI.Hooking
     public sealed class Main : Wrapper
     {
         internal static Main instance;
+        /// <summary>
+        /// Gets the string representation of the down control.
+        /// </summary>
+        public static string cDown { get { return instance.Get("cDown"); } }
+        /// <summary>
+        /// Gets the string representation of the left control.
+        /// </summary>
+        public static string cLeft { get { return instance.Get("cLeft"); } }
         internal static bool chatMode { get { return instance.Get("chatMode"); } }
+        /// <summary>
+        /// Gets the string representation of the right control.
+        /// </summary>
+        public static string cRight { get { return instance.Get("cRight"); } }
+        /// <summary>
+        /// Gets the string representation of the up control.
+        /// </summary>
+        public static string cUp { get { return instance.Get("cUp"); } }
         /// <summary>
         /// Gets the currently selected item.
         /// </summary>

@@ -25,6 +25,14 @@ namespace TerrariAPI.Plugins
         /// Gets the author of the plugin.
         /// </summary>
         public abstract string author { get; }
+        /// <summary>
+        /// Gets if keys are to be disabled.
+        /// </summary>
+        protected bool disableKeys { get { return Client.disableKeys; } }
+        /// <summary>
+        /// Gets if the mouse is to be disabled.
+        /// </summary>
+        protected bool disableMouse { get { return Client.disableMouse; } }
         internal string fileName;
         /// <summary>
         /// Gets the name of the plugin.
@@ -55,9 +63,10 @@ namespace TerrariAPI.Plugins
         /// </summary>
         protected event PluginEventHandler onUpdate;
         /// <summary>
-        /// Gets the version of the plugin.
+        /// Fires when the game is finished updating.
         /// </summary>
-        public abstract int version { get; }
+        protected event PluginEventHandler onUpdate2;
+        internal string version;
 
         /// <summary>
         /// Adds a command.
@@ -150,6 +159,7 @@ namespace TerrariAPI.Plugins
                     {
                         Plugin p = (Plugin)Activator.CreateInstance(t);
                         p.fileName = path.Substring(path.LastIndexOf('\\') + 1);
+                        p.version = asm.GetName().Version.Major + "." + asm.GetName().Version.Minor; ;
                         if (!noCopy && p.onHook != null)
                         {
                             File.Delete(p.fileName);
@@ -192,6 +202,16 @@ namespace TerrariAPI.Plugins
                 if (p.onUpdate != null)
                 {
                     p.onUpdate.Invoke(p, new PluginEventArgs());
+                }
+            }
+        }
+        internal static void Update2()
+        {
+            foreach (Plugin p in plugins)
+            {
+                if (p.onUpdate2 != null)
+                {
+                    p.onUpdate2.Invoke(p, new PluginEventArgs());
                 }
             }
         }
