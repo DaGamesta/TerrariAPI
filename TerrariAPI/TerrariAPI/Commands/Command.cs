@@ -159,5 +159,37 @@ namespace TerrariAPI.Commands
             }
             return ID;
         }
+        /// <summary>
+        /// Gets a projectile based on name. If there is an error, -1 is returned; otherwise, the projectile type is returned.
+        /// </summary>
+        /// <param name="str">Player name to search for.</param>
+        public static int GetProjectile(string str)
+        {
+            int matches = 0;
+            int ID = -1;
+            for (int i = 0; i < Client.projNames.Length; i++)
+            {
+                if (Client.projNames[i] == str)
+                {
+                    return i;
+                }
+                if (Client.projNames[i].ToLower().Contains(str.ToLower()))
+                {
+                    ID = i;
+                    matches++;
+                }
+            }
+            if (matches == 0)
+            {
+                Client.PrintError("Invalid projectile.");
+                return -1;
+            }
+            if (matches > 1)
+            {
+                Client.PrintError("projectile ambiguity (" + matches + " possible matches).");
+                return -1;
+            }
+            return ID;
+        }
     }
 }

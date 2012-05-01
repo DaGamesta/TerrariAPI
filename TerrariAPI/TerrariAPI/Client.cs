@@ -24,6 +24,7 @@ namespace TerrariAPI
         internal static Game game;
         private static Keys[] lastPressedKeys = Keyboard.GetState().GetPressedKeys();
         private static Keys[] pressedKeys = Keyboard.GetState().GetPressedKeys();
+        internal static string[] projNames;
         internal static State state;
 
         internal static void Initialize()
@@ -40,6 +41,14 @@ namespace TerrariAPI
             GUI.Initialize(game);
             GUI.Add(consoleForm = new ConsoleForm());
             Plugin.Initialize();
+
+            projNames = new string[Main.instance.Get("projectileTexture").Length];
+            dynamic temp = Projectile.New();
+            for (int i = 0; i < projNames.Length; i++)
+            {
+                temp.SetDefaults(i);
+                projNames[i] = temp.name;
+            }
         }
         internal static void LoadContent()
         {
@@ -68,10 +77,6 @@ namespace TerrariAPI
                         Command.Execute(b.commands);
                     }
                 }
-            }
-            if (pressedKeys.Contains<Keys>(Keys.Tab) && !lastPressedKeys.Contains<Keys>(Keys.Tab))
-            {
-                consoleForm.Toggle();
             }
 
             GUI.Update();

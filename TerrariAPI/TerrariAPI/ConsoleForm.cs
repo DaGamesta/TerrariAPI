@@ -26,7 +26,7 @@ namespace TerrariAPI
             tb1.sizeFunction = () => new Size(size.width - 12, tb1.size.height);
             Add(tb1);
 
-            onUpdate += (o, e) =>
+            onUpdate += () =>
             {
                 if (rectangle.IntersectsMouse())
                 {

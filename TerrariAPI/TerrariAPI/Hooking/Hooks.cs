@@ -35,6 +35,7 @@ namespace TerrariAPI.Hooking
             Lighting.instance = new Lighting() { type = terraria.GetType("Terraria.Lighting") };
             NetMessage.instance = new NetMessage() { type = terraria.GetType("Terraria.NetMessage") };
             Netplay.instance = new Netplay() { type = terraria.GetType("Terraria.Netplay") };
+            Projectile.instance = new Projectile() { type = terraria.GetType("Terraria.Projectile") };
             Tile.instance = new Tile() { type = terraria.GetType("Terraria.Tile") };
             WorldGen.instance = new WorldGen() { type = terraria.GetType("Terraria.WorldGen") };
 
