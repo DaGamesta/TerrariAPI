@@ -102,6 +102,7 @@
     <Compile Include="Commands\AlertAttribute.cs" />
     <Compile Include="Commands\AliasAttribute.cs" />
     <Compile Include="Commands\Binding.cs" />
+    <Compile Include="Commands\Match.cs" />
     <Compile Include="ConsoleForm.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Commands\DescriptionAttribute.cs" />

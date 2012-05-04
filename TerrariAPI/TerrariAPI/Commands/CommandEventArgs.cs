@@ -45,7 +45,7 @@ namespace TerrariAPI.Commands
             bool quotes = false;
             for (int i = 0; i < str.Length; i++)
             {
-                if (str[i] == '"' && str[i - 1] != '\\')
+                if (str[i] == '"')
                 {
                     quotes = !quotes;
                 }
@@ -53,13 +53,27 @@ namespace TerrariAPI.Commands
                 {
                     temp += str[i];
                 }
-                if ((str[i] == ' ' && !quotes) || i == str.Length - 1)
+                if ((str[i] == ' ' || i == str.Length - 1) && !quotes)
                 {
                     args.Add((temp != "" && temp[0] == '"') ? temp.Substring(1, temp.Length - 2) : temp);
                     temp = "";
                 }
             }
             this.args = args.ToArray();
+        }
+
+        /// <summary>
+        /// Gives the plain text after the index'th parameter.
+        /// </summary>
+        /// <param name="index"></param>
+        public string Eol(int index)
+        {
+            string str = "";
+            for (int i = index; i < length; i++)
+            {
+                str += this[i];
+            }
+            return str;
         }
     }
 }

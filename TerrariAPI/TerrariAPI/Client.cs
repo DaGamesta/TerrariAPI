@@ -26,6 +26,19 @@ namespace TerrariAPI
         private static Keys[] pressedKeys = Keyboard.GetState().GetPressedKeys();
         internal static string[] projNames;
         internal static State state;
+        internal static string[] tileNames = new string[] { "dirt", "stone", "", "", "torch", "tree", "iron", "copper", "gold", "silver", "",
+            "", "", "", "", "", "", "", "", "platform", "", "", "demonite", "", "", "ebonstone", "", "", "", "", "wood", "", "", "", "", "",
+            "", "meteorite", "gray brick", "red brick", "clay", "blue brick", "", "green brick", "pink brick", "gold brick", "silver brick",
+            "copper brick", "spike", "", "", "cobweb", "", "sand", "glass", "","obsidian", "ash", "hellstone", "mud", "", "", "", "sapphire",
+            "ruby", "emerald", "topaz", "amethyst", "diamond", "", "", "", "glowing mushroom", "", "", "obsidian brick", "hellstone brick", "",
+            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "cobalt",
+            "mythril", "", "", "adamantite", "ebonsand", "", "", "", "pearlsand", "pearlstone", "pearlstone brick", "iridescent brick",
+            "mudstone block", "cobalt brick", "mythril brick", "silt", "", "", "", "", "", "", "active stone", "inactive stone", "", "", "",
+            "", "", "", "", "", "demonite brick", "explosives", "", "", "", "candy cane", "green candy cane", "snow", "snow brick", "" };
+        internal static string[] wallNames = new string[] { "", "stone", "", "ebonstone", "wood", "gray brick", "red brick", "", "", "",
+            "gold brick", "silver brick", "copper brick", "hellstone brick", "", "", "dirt", "blue brick", "green brick", "pink brick",
+            "obsidian brick", "glass", "pearlstone brick", "iridescent brick", "mudstone brick", "cobalt", "mythril", "planked", "pearlstone",
+            "candy cane", "green candy cane", "snow brick" };
 
         internal static void Initialize()
         {
@@ -66,6 +79,9 @@ namespace TerrariAPI
         internal static void Update()
         {
             state = State.UPDATE;
+            GUI.Update();
+            Plugin.Update();
+
             lastPressedKeys = pressedKeys;
             pressedKeys = Keyboard.GetState().GetPressedKeys();
             if (!disableKeys && !Main.chatMode)
@@ -78,9 +94,6 @@ namespace TerrariAPI
                     }
                 }
             }
-
-            GUI.Update();
-            Plugin.Update();
         }
         internal static void DKeys()
         {
@@ -175,7 +188,7 @@ namespace TerrariAPI
                 {
                     if (c.name.ToLower() == e[0].ToLower())
                     {
-                        Print(c.name + ": " + c.desc, new Color(25, 225, 25));
+                        Print(c.name + ": " + c.desc, new Color(225, 225, 25));
                         return;
                     }
                 }
@@ -183,19 +196,14 @@ namespace TerrariAPI
             }
             else
             {
-                List<string> commands = new List<string>();
-                foreach (Command c in Command.commands)
-                {
-                    commands.Add(c.name);
-                }
-                commands.Sort();
+                var commands = from c in Command.commands
+                                         orderby c.name
+                                         select c;
                 Print("Commands:", new Color(25, 155, 25));
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < commands.Count; i++)
+                foreach (Command c in commands)
                 {
-                    sb.Append(sb.ToString() == "" ? commands[i] : ", " + commands[i]);
+                    Print(c.name + ": " + c.desc, new Color(225, 225, 25));
                 }
-                Print(sb.ToString(), new Color(225, 225, 25));
             }
         }
         [Alias("m")]

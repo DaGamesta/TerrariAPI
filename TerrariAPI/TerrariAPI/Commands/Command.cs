@@ -99,97 +99,171 @@ namespace TerrariAPI.Commands
         /// Gets an item type based on name. If there is an error, -1 is returned; otherwise, the item type is returned.
         /// </summary>
         /// <param name="str">Item name to search for.</param>
-        public static int GetItem(string str)
+        public static Match GetItem(string str)
         {
             int matches = 0;
+            string name = "";
             int ID = -1;
             for (int i = 0; i < Main.itemNames.Length; i++)
             {
-                if (Main.itemNames[i] == str)
+                if (Main.itemNames[i].ToLower() == str.ToLower())
                 {
-                    return i;
+                    return new Match(i, Main.itemNames[i]);
                 }
                 if (Main.itemNames[i].ToLower().Contains(str.ToLower()))
                 {
                     ID = i;
                     matches++;
+                    name = Main.itemNames[i];
                 }
             }
             if (matches == 0)
             {
                 Client.PrintError("Invalid item.");
-                return -1;
+                return new Match(-1, "");
             }
             if (matches > 1)
             {
                 Client.PrintError("Item ambiguity (" + matches + " possible matches).");
-                return -1;
+                return new Match(-1, "");
             }
-            return ID;
+            return new Match(ID, name);
         }
         /// <summary>
         /// Gets a player index based on name. If there is an error, -1 is returned; otherwise, the player index is returned.
         /// </summary>
         /// <param name="str">Player name to search for.</param>
-        public static int GetPlayer(string str)
+        public static Match GetPlayer(string str)
         {
             int matches = 0;
+            string name = "";
             int ID = -1;
             for (int i = 0; i < Main.players.Length; i++)
             {
-                if (Main.players[i].name == str)
+                if (Main.players[i].name.ToLower() == str.ToLower())
                 {
-                    return i;
+                    return new Match(i, Main.players[i].name);
                 }
                 if (Main.players[i].name.ToLower().Contains(str.ToLower()))
                 {
                     ID = i;
                     matches++;
+                    name = Main.players[i].name;
                 }
             }
             if (matches == 0)
             {
                 Client.PrintError("Invalid player.");
-                return -1;
+                return new Match(-1, "");
             }
             if (matches > 1)
             {
                 Client.PrintError("Player ambiguity (" + matches + " possible matches).");
-                return -1;
+                return new Match(-1, "");
             }
-            return ID;
+            return new Match(ID, name);
         }
         /// <summary>
         /// Gets a projectile based on name. If there is an error, -1 is returned; otherwise, the projectile type is returned.
         /// </summary>
-        /// <param name="str">Player name to search for.</param>
-        public static int GetProjectile(string str)
+        /// <param name="str">Projectile name to search for.</param>
+        public static Match GetProjectile(string str)
         {
             int matches = 0;
+            string name = "";
             int ID = -1;
             for (int i = 0; i < Client.projNames.Length; i++)
             {
-                if (Client.projNames[i] == str)
+                if (Client.projNames[i].ToLower() == str.ToLower())
                 {
-                    return i;
+                    return new Match(i, Client.projNames[i]);
                 }
                 if (Client.projNames[i].ToLower().Contains(str.ToLower()))
                 {
                     ID = i;
                     matches++;
+                    name = Client.projNames[i];
                 }
             }
             if (matches == 0)
             {
                 Client.PrintError("Invalid projectile.");
-                return -1;
+                return new Match(-1, "");
             }
             if (matches > 1)
             {
-                Client.PrintError("projectile ambiguity (" + matches + " possible matches).");
-                return -1;
+                Client.PrintError("Projectile ambiguity (" + matches + " possible matches).");
+                return new Match(-1, "");
             }
-            return ID;
+            return new Match(ID, name);
+        }
+        /// <summary>
+        /// Gets a tile type based on name. If there is an error, -1 is returned; otherwise, the tile type is returned.
+        /// </summary>
+        /// <param name="str">Tile name to search for.</param>
+        public static Match GetTile(string str)
+        {
+            int matches = 0;
+            string name = "";
+            int ID = -1;
+            for (int i = 0; i < Client.tileNames.Length; i++)
+            {
+                if (Client.tileNames[i].ToLower() == str.ToLower())
+                {
+                    return new Match(i, Client.tileNames[i]);
+                }
+                if (Client.tileNames[i].ToLower().Contains(str.ToLower()))
+                {
+                    ID = i;
+                    matches++;
+                    name = Client.tileNames[i];
+                }
+            }
+            if (matches == 0)
+            {
+                Client.PrintError("Invalid tile.");
+                return new Match(-1, "");
+            }
+            if (matches > 1)
+            {
+                Client.PrintError("Tile ambiguity (" + matches + " possible matches).");
+                return new Match(-1, "");
+            }
+            return new Match(ID, name);
+        }
+        /// <summary>
+        /// Gets a wall type based on name. If there is an error, -1 is returned; otherwise, the wall type is returned.
+        /// </summary>
+        /// <param name="str">Wall name to search for.</param>
+        public static Match GetWall(string str)
+        {
+            int matches = 0;
+            string name = "";
+            int ID = -1;
+            for (int i = 0; i < Client.wallNames.Length; i++)
+            {
+                if (Client.wallNames[i].ToLower() == str.ToLower())
+                {
+                    return new Match(i, Client.wallNames[i]);
+                }
+                if (Client.wallNames[i].ToLower().Contains(str.ToLower()))
+                {
+                    ID = i;
+                    matches++;
+                    name = Client.wallNames[i];
+                }
+            }
+            if (matches == 0)
+            {
+                Client.PrintError("Invalid wall.");
+                return new Match(-1, "");
+            }
+            if (matches > 1)
+            {
+                Client.PrintError("Wall ambiguity (" + matches + " possible matches).");
+                return new Match(-1, "");
+            }
+            return new Match(ID, name);
         }
     }
 }

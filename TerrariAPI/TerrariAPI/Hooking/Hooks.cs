@@ -11,9 +11,16 @@ using TerrariAPI.Plugins;
 
 namespace TerrariAPI.Hooking
 {
-    internal static class Hooks
+    /// <summary>
+    /// Manages Terraria hooking.
+    /// </summary>
+    public static class Hooks
     {
         internal static AssemblyDefinition asm;
+        /// <summary>
+        /// Used to lock until all wrappers are created and the game is started.
+        /// </summary>
+        public static bool locked = true;
         private static ModuleDefinition mod;
 
         internal static void Start()
@@ -40,6 +47,7 @@ namespace TerrariAPI.Hooking
             WorldGen.instance = new WorldGen() { type = terraria.GetType("Terraria.WorldGen") };
 
             Main.instance = new Main(terraria.GetType("Terraria.Main").GetConstructor(new Type[] { }).Invoke(null));
+            locked = false;
             try
             {
                 Main.Run();
