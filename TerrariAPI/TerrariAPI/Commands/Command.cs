@@ -96,15 +96,59 @@ namespace TerrariAPI.Commands
             }
         }
         /// <summary>
+        /// Gets a buff type based on name. If there is an error, -1 is returned; otherwise, the buff type is returned.
+        /// </summary>
+        /// <param name="str">Buff name to search for.</param>
+        public static Match GetBuff(string str)
+        {
+            int directID;
+            if (int.TryParse(str, out directID) && directID > 0 && directID < Main.buffNames.Length)
+            {
+                return new Match(directID, Main.buffNames[directID]);
+            }
+            int matches = 0;
+            string name = "";
+            int ID = -1;
+            for (int i = 1; i < Main.buffNames.Length; i++)
+            {
+                if (Main.buffNames[i].ToLower() == str.ToLower())
+                {
+                    return new Match(i, Main.buffNames[i]);
+                }
+                if (Main.buffNames[i].ToLower().Contains(str.ToLower()))
+                {
+                    ID = i;
+                    matches++;
+                    name = Main.buffNames[i];
+                }
+            }
+            if (matches == 0)
+            {
+                Client.PrintError("Invalid buff.");
+                return new Match(-1, "");
+            }
+            if (matches > 1)
+            {
+                Client.PrintError("Buff ambiguity (" + matches + " possible matches).");
+                return new Match(-1, "");
+            }
+            return new Match(ID, name);
+        }
+        /// <summary>
         /// Gets an item type based on name. If there is an error, -1 is returned; otherwise, the item type is returned.
         /// </summary>
         /// <param name="str">Item name to search for.</param>
         public static Match GetItem(string str)
         {
+            int directID;
+            if (int.TryParse(str, out directID) && directID > 0 && directID < Main.itemNames.Length)
+            {
+                return new Match(directID, Main.itemNames[directID]);
+            }
             int matches = 0;
             string name = "";
             int ID = -1;
-            for (int i = 0; i < Main.itemNames.Length; i++)
+            for (int i = 1; i < Main.itemNames.Length; i++)
             {
                 if (Main.itemNames[i].ToLower() == str.ToLower())
                 {
@@ -135,6 +179,11 @@ namespace TerrariAPI.Commands
         /// <param name="str">Player name to search for.</param>
         public static Match GetPlayer(string str)
         {
+            int directID;
+            if (int.TryParse(str, out directID) && directID >= 0 && directID < Main.players.Length)
+            {
+                return new Match(directID, Main.players[directID].name);
+            }
             int matches = 0;
             string name = "";
             int ID = -1;
@@ -169,10 +218,15 @@ namespace TerrariAPI.Commands
         /// <param name="str">Projectile name to search for.</param>
         public static Match GetProjectile(string str)
         {
+            int directID;
+            if (int.TryParse(str, out directID) && directID > 0 && directID < Client.projNames.Length)
+            {
+                return new Match(directID, Client.projNames[directID]);
+            }
             int matches = 0;
             string name = "";
             int ID = -1;
-            for (int i = 0; i < Client.projNames.Length; i++)
+            for (int i = 1; i < Client.projNames.Length; i++)
             {
                 if (Client.projNames[i].ToLower() == str.ToLower())
                 {
@@ -203,6 +257,11 @@ namespace TerrariAPI.Commands
         /// <param name="str">Tile name to search for.</param>
         public static Match GetTile(string str)
         {
+            int directID;
+            if (int.TryParse(str, out directID) && directID > 0 && directID < Client.tileNames.Length)
+            {
+                return new Match(directID, Client.tileNames[directID]);
+            }
             int matches = 0;
             string name = "";
             int ID = -1;
@@ -237,10 +296,15 @@ namespace TerrariAPI.Commands
         /// <param name="str">Wall name to search for.</param>
         public static Match GetWall(string str)
         {
+            int directID;
+            if (int.TryParse(str, out directID) && directID > 0 && directID < Client.wallNames.Length)
+            {
+                return new Match(directID, Client.wallNames[directID]);
+            }
             int matches = 0;
             string name = "";
             int ID = -1;
-            for (int i = 0; i < Client.wallNames.Length; i++)
+            for (int i = 1; i < Client.wallNames.Length; i++)
             {
                 if (Client.wallNames[i].ToLower() == str.ToLower())
                 {

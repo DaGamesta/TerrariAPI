@@ -19,6 +19,7 @@ namespace TerrariAPI
     {
         internal static List<Binding> bindings = new List<Binding>();
         private static ConsoleForm consoleForm;
+        internal static bool disableBindings;
         internal static bool disableKeys;
         internal static bool disableMouse;
         internal static Game game;
@@ -34,7 +35,7 @@ namespace TerrariAPI
             "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "cobalt",
             "mythril", "", "", "adamantite", "ebonsand", "", "", "", "pearlsand", "pearlstone", "pearlstone brick", "iridescent brick",
             "mudstone block", "cobalt brick", "mythril brick", "silt", "", "", "", "", "", "", "active stone", "inactive stone", "", "", "",
-            "", "", "", "", "", "demonite brick", "explosives", "", "", "", "candy cane", "green candy cane", "snow", "snow brick", "" };
+            "", "", "", "", "", "demonite brick", "explosives", "inlet", "outlet", "", "candy cane", "green candy cane", "snow", "snow brick", "" };
         internal static string[] wallNames = new string[] { "", "stone", "", "ebonstone", "wood", "gray brick", "red brick", "", "", "",
             "gold brick", "silver brick", "copper brick", "hellstone brick", "", "", "dirt", "blue brick", "green brick", "pink brick",
             "obsidian brick", "glass", "pearlstone brick", "iridescent brick", "mudstone brick", "cobalt", "mythril", "planked", "pearlstone",
@@ -79,21 +80,8 @@ namespace TerrariAPI
         internal static void Update()
         {
             state = State.UPDATE;
-            GUI.Update();
             Plugin.Update();
-
-            lastPressedKeys = pressedKeys;
-            pressedKeys = Keyboard.GetState().GetPressedKeys();
-            if (!disableKeys && !Main.chatMode)
-            {
-                foreach (Binding b in bindings)
-                {
-                    if (!lastPressedKeys.Contains<Keys>(b.key) && pressedKeys.Contains<Keys>(b.key))
-                    {
-                        Command.Execute(b.commands);
-                    }
-                }
-            }
+            GUI.Update();
         }
         internal static void DKeys()
         {
@@ -115,6 +103,7 @@ namespace TerrariAPI
             Main.inputTextEnter = false;
             if (!disableKeys)
             {
+                disableBindings = true;
                 oldStr += Input.nextStr;
                 if (Input.TappedKey(Keys.Enter))
                 {
@@ -129,7 +118,20 @@ namespace TerrariAPI
         }
         internal static void Update2()
         {
-            disableKeys = disableMouse = false;
+            lastPressedKeys = pressedKeys;
+            pressedKeys = Keyboard.GetState().GetPressedKeys();
+            if (!disableKeys && !disableBindings)
+            {
+                foreach (Binding b in bindings)
+                {
+                    if (!lastPressedKeys.Contains<Keys>(b.key) && pressedKeys.Contains<Keys>(b.key))
+                    {
+                        Command.Execute(b.commands);
+                    }
+                }
+            }
+
+            disableBindings = disableKeys = disableMouse = false;
             Plugin.Update2();
         }
         internal static void Draw()

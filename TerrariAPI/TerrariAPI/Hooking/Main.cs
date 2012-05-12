@@ -15,6 +15,10 @@ namespace TerrariAPI.Hooking
     {
         internal static Main instance;
         /// <summary>
+        /// Gets the buff name array.
+        /// </summary>
+        public static string[] buffNames { get { return instance.Get("buffName"); } }
+        /// <summary>
         /// Gets the string representation of the down control.
         /// </summary>
         public static string cDown { get { return instance.Get("cDown"); } }
@@ -68,6 +72,10 @@ namespace TerrariAPI.Hooking
         /// Gets the array of players.
         /// </summary>
         public static dynamic[] players { get { return instance.Get("player"); } }
+        /// <summary>
+        /// Gets the screen size.
+        /// </summary>
+        public static Vector2 screenSize { get { return new Vector2(Client.game.Window.ClientBounds.Width, Client.game.Window.ClientBounds.Height); } }
         /// <summary>
         /// Gets the screen position.
         /// </summary>
