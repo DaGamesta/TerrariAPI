@@ -40,8 +40,10 @@ namespace TerrariAPI.Hooking
             
             Item.instance = new Item() { type = terraria.GetType("Terraria.Item") };
             Lighting.instance = new Lighting() { type = terraria.GetType("Terraria.Lighting") };
+            NPC.instance = new NPC() { type = terraria.GetType("Terraria.NPC") };
             NetMessage.instance = new NetMessage() { type = terraria.GetType("Terraria.NetMessage") };
             Netplay.instance = new Netplay() { type = terraria.GetType("Terraria.Netplay") };
+            Player.instance = new Player() { type = terraria.GetType("Terraria.Player") };
             Projectile.instance = new Projectile() { type = terraria.GetType("Terraria.Projectile") };
             Tile.instance = new Tile() { type = terraria.GetType("Terraria.Tile") };
             WorldGen.instance = new WorldGen() { type = terraria.GetType("Terraria.WorldGen") };
@@ -67,6 +69,12 @@ namespace TerrariAPI.Hooking
         }
         private static void HookMain()
         {
+            #region .cctor
+            asm.GetMethod("Main", ".cctor").Body.GetILProcessor().Insert(Instruction.Create(OpCodes.Stsfld, asm.GetField("Main", "numChatLines")), false,
+                Instruction.Create(OpCodes.Ldc_I4, 13),
+                Instruction.Create(OpCodes.Add)
+                );
+            #endregion
             #region .ctor
             asm.GetMethod("Main", ".ctor").Body.GetILProcessor().Insert(Target.START,
                 Instruction.Create(OpCodes.Ldarg_0),
@@ -78,7 +86,7 @@ namespace TerrariAPI.Hooking
                 Instruction.Create(OpCodes.Call, mod.Import(GetClientMethod("Initialize")))
                 );
             #endregion
-            #region Load content
+            #region LoadContent
             asm.GetMethod("Main", "LoadContent").Body.GetILProcessor().Insert(Target.END,
                 Instruction.Create(OpCodes.Call, mod.Import(GetClientMethod("LoadContent")))
                 );
@@ -98,7 +106,7 @@ namespace TerrariAPI.Hooking
                 Instruction.Create(OpCodes.Call, mod.Import(GetClientMethod("DMouse")))
                 );
             #endregion
-            #region Input text
+            #region GetInputText
             asm.GetMethod("Main", "GetInputText").Body.GetILProcessor().Insert(Target.START,
                 Instruction.Create(OpCodes.Ldarg_0),
                 Instruction.Create(OpCodes.Call, mod.Import(GetClientMethod("InputText"))),

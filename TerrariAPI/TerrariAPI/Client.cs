@@ -195,17 +195,15 @@ namespace TerrariAPI
                     }
                 }
                 PrintError("Invalid command.");
+                return;
             }
-            else
+            var commands = from c in Command.commands
+                                        orderby c.name
+                                        select c;
+            Print("Commands:", new Color(25, 155, 25));
+            foreach (Command c in commands)
             {
-                var commands = from c in Command.commands
-                                         orderby c.name
-                                         select c;
-                Print("Commands:", new Color(25, 155, 25));
-                foreach (Command c in commands)
-                {
-                    Print(c.name + ": " + c.desc, new Color(225, 225, 25));
-                }
+                Print(c.name + ": " + c.desc, new Color(225, 225, 25));
             }
         }
         [Alias("m")]

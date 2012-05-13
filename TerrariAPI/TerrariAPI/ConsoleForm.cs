@@ -54,6 +54,7 @@ namespace TerrariAPI
             TextBox tb = (TextBox)sender;
             if (tb.text != "")
             {
+                AddMessage(">> " + tb.text, new Color(255, 255, 255));
                 Command.Execute(tb.text);
                 tb.Clear();
             }
