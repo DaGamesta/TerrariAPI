@@ -12,6 +12,15 @@ namespace TerrariAPI.Hooking
     {
         internal static Player instance;
 
+        /// <summary>
+        /// Gets or sets the tile X range.
+        /// </summary>
+        public static int tileRangeX { get { return instance.Get("tileRangeX"); } set { instance.Set("tileRangeX", value); } }
+        /// <summary>
+        /// Gets or sets the tile Y range.
+        /// </summary>
+        public static int tileRangeY { get { return instance.Get("tileRangeY"); } set { instance.Set("tileRangeY", value); } }
+
         internal Player()
             : base((Type)null)
         {

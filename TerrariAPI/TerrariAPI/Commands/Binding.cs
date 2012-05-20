@@ -43,7 +43,7 @@ namespace TerrariAPI.Commands
                         }
                         else
                         {
-                            Client.bindings.Add(new Binding() { commands = temp.commands, key = temp.key });
+                            Client.Bindings.Add(new Binding() { commands = temp.commands, key = temp.key });
                             temp = null;
                         }
                     }

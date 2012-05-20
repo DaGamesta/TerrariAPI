@@ -30,11 +30,11 @@ namespace TerrariAPI
             {
                 if (rectangle.IntersectsMouse())
                 {
-                    Client.disableMouse = true;
+                    Client.DisableMouse = true;
                 }
                 if (tb1.active)
                 {
-                    Client.disableKeys = true;
+                    Client.DisableKeys = true;
                 }
             };
 

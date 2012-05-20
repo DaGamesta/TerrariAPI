@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using TerrariAPI.Hooking;
-using TerrariAPI.Plugins;
 
 namespace TerrariAPI
 {
@@ -16,6 +15,10 @@ namespace TerrariAPI
                 {
                     throw new FileNotFoundException("Terraria executable could not be found.");
                 }
+                if (!Directory.Exists("Logs"))
+                {
+                    Directory.CreateDirectory("Logs");
+                }
                 Plugin.Load();
                 Hooks.Start();
             }
@@ -26,7 +29,10 @@ namespace TerrariAPI
                     writer.WriteLine("[{0}]:\n{1}\n", DateTime.Now, e);
                 }
             }
-            Plugin.Unload();
+            foreach (Plugin p in Plugin.plugins)
+            {
+                p.Dispose();
+            }
         }
     }
 }

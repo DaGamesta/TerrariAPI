@@ -12,6 +12,11 @@ namespace TerrariAPI.Hooking
     {
         internal static NetMessage instance;
 
+        /// <summary>
+        /// Gets the array of messsage buffers.
+        /// </summary>
+        public static dynamic[] messageBuffers { get { return instance.Get("buffer"); } }
+
         internal NetMessage()
             : base((Type)null)
         {

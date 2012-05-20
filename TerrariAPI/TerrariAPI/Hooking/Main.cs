@@ -75,7 +75,7 @@ namespace TerrariAPI.Hooking
         /// <summary>
         /// Gets the screen size.
         /// </summary>
-        public static Vector2 screenSize { get { return new Vector2(Client.game.Window.ClientBounds.Width, Client.game.Window.ClientBounds.Height); } }
+        public static Vector2 screenSize { get { return new Vector2(Client.Game.Window.ClientBounds.Width, Client.Game.Window.ClientBounds.Height); } }
         /// <summary>
         /// Gets the screen position.
         /// </summary>
@@ -85,6 +85,10 @@ namespace TerrariAPI.Hooking
         /// </summary>
         public static bool singleplayer { get { return instance.Get("netMode") == 0 && !instance.Get("gameMenu"); } }
         internal static SpriteBatch spriteBatch { get { return (SpriteBatch)instance.Get("spriteBatch"); } }
+        /// <summary>
+        /// Gets the array of team colors.
+        /// </summary>
+        public static Color[] teamColors { get { return instance.Get("teamColor"); } }
         /// <summary>
         /// Gets the array of tiles.
         /// </summary>

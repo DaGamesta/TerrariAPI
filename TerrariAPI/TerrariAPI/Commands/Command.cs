@@ -219,24 +219,24 @@ namespace TerrariAPI.Commands
         public static Match GetProjectile(string str)
         {
             int directID;
-            if (int.TryParse(str, out directID) && directID > 0 && directID < Client.projNames.Length)
+            if (int.TryParse(str, out directID) && directID > 0 && directID < Client.ProjNames.Length)
             {
-                return new Match(directID, Client.projNames[directID]);
+                return new Match(directID, Client.ProjNames[directID]);
             }
             int matches = 0;
             string name = "";
             int ID = -1;
-            for (int i = 1; i < Client.projNames.Length; i++)
+            for (int i = 1; i < Client.ProjNames.Length; i++)
             {
-                if (Client.projNames[i].ToLower() == str.ToLower())
+                if (Client.ProjNames[i].ToLower() == str.ToLower())
                 {
-                    return new Match(i, Client.projNames[i]);
+                    return new Match(i, Client.ProjNames[i]);
                 }
-                if (Client.projNames[i].ToLower().Contains(str.ToLower()))
+                if (Client.ProjNames[i].ToLower().Contains(str.ToLower()))
                 {
                     ID = i;
                     matches++;
-                    name = Client.projNames[i];
+                    name = Client.ProjNames[i];
                 }
             }
             if (matches == 0)
@@ -258,24 +258,24 @@ namespace TerrariAPI.Commands
         public static Match GetTile(string str)
         {
             int directID;
-            if (int.TryParse(str, out directID) && directID > 0 && directID < Client.tileNames.Length)
+            if (int.TryParse(str, out directID) && directID > 0 && directID < Client.TileNames.Length)
             {
-                return new Match(directID, Client.tileNames[directID]);
+                return new Match(directID, Client.TileNames[directID]);
             }
             int matches = 0;
             string name = "";
             int ID = -1;
-            for (int i = 0; i < Client.tileNames.Length; i++)
+            for (int i = 0; i < Client.TileNames.Length; i++)
             {
-                if (Client.tileNames[i].ToLower() == str.ToLower())
+                if (Client.TileNames[i].ToLower() == str.ToLower())
                 {
-                    return new Match(i, Client.tileNames[i]);
+                    return new Match(i, Client.TileNames[i]);
                 }
-                if (Client.tileNames[i].ToLower().Contains(str.ToLower()))
+                if (Client.TileNames[i].ToLower().Contains(str.ToLower()))
                 {
                     ID = i;
                     matches++;
-                    name = Client.tileNames[i];
+                    name = Client.TileNames[i];
                 }
             }
             if (matches == 0)
@@ -297,24 +297,24 @@ namespace TerrariAPI.Commands
         public static Match GetWall(string str)
         {
             int directID;
-            if (int.TryParse(str, out directID) && directID > 0 && directID < Client.wallNames.Length)
+            if (int.TryParse(str, out directID) && directID > 0 && directID < Client.WallNames.Length)
             {
-                return new Match(directID, Client.wallNames[directID]);
+                return new Match(directID, Client.WallNames[directID]);
             }
             int matches = 0;
             string name = "";
             int ID = -1;
-            for (int i = 1; i < Client.wallNames.Length; i++)
+            for (int i = 1; i < Client.WallNames.Length; i++)
             {
-                if (Client.wallNames[i].ToLower() == str.ToLower())
+                if (Client.WallNames[i].ToLower() == str.ToLower())
                 {
-                    return new Match(i, Client.wallNames[i]);
+                    return new Match(i, Client.WallNames[i]);
                 }
-                if (Client.wallNames[i].ToLower().Contains(str.ToLower()))
+                if (Client.WallNames[i].ToLower().Contains(str.ToLower()))
                 {
                     ID = i;
                     matches++;
-                    name = Client.wallNames[i];
+                    name = Client.WallNames[i];
                 }
             }
             if (matches == 0)

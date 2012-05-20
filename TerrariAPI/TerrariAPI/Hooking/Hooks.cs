@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using TerrariAPI.Plugins;
 
 namespace TerrariAPI.Hooking
 {
@@ -17,20 +18,21 @@ namespace TerrariAPI.Hooking
     public static class Hooks
     {
         internal static AssemblyDefinition asm;
+        private static ModuleDefinition mod;
         /// <summary>
         /// Used to lock until all wrappers are created and the game is started.
         /// </summary>
-        public static bool locked = true;
-        private static ModuleDefinition mod;
+        public static bool Locked = true;
 
         internal static void Start()
         {
-            Client.state = State.HOOK;
             asm = AssemblyDefinition.ReadAssembly("Terraria.exe");
             mod = asm.MainModule;
             HookKeys();
             HookMain();
-            Plugin.Hook();
+            HookNetMessage();
+            HookMessageBuffer();
+            GameHooks.OnHook();
             MemoryStream ms = new MemoryStream();
             asm.Write(ms);
 #if DEBUG
@@ -49,7 +51,7 @@ namespace TerrariAPI.Hooking
             WorldGen.instance = new WorldGen() { type = terraria.GetType("Terraria.WorldGen") };
 
             Main.instance = new Main(terraria.GetType("Terraria.Main").GetConstructor(new Type[] { }).Invoke(null));
-            locked = false;
+            Locked = false;
             try
             {
                 Main.Run();
@@ -78,7 +80,7 @@ namespace TerrariAPI.Hooking
             #region .ctor
             asm.GetMethod("Main", ".ctor").Body.GetILProcessor().Insert(Target.START,
                 Instruction.Create(OpCodes.Ldarg_0),
-                Instruction.Create(OpCodes.Stsfld, mod.Import(GetClientField("game")))
+                Instruction.Create(OpCodes.Stsfld, mod.Import(GetClientField("Game")))
                 );
             #endregion
             #region Initialize
@@ -136,7 +138,32 @@ namespace TerrariAPI.Hooking
             }
             #endregion
         }
-
+        private static void HookNetMessage()
+        {
+            #region SendData
+            MethodDefinition sendData = asm.GetMethod("NetMessage", "SendData");
+            sendData.Body.GetILProcessor().Insert(Target.START,
+                Instruction.Create(OpCodes.Ldarg_0),
+                Instruction.Create(OpCodes.Ldarg_3),
+                Instruction.Create(OpCodes.Ldarg_S, sendData.Parameters[4]),
+                Instruction.Create(OpCodes.Ldarg_S, sendData.Parameters[5]),
+                Instruction.Create(OpCodes.Ldarg_S, sendData.Parameters[6]),
+                Instruction.Create(OpCodes.Ldarg_S, sendData.Parameters[7]),
+                Instruction.Create(OpCodes.Ldarg_S, sendData.Parameters[8]),
+                Instruction.Create(OpCodes.Call, mod.Import(GetClientMethod("SendData")))
+                );
+            #endregion
+        }
+        private static void HookMessageBuffer()
+        {
+            #region GetData
+            asm.GetMethod("messageBuffer", "GetData").Body.GetILProcessor().Insert(Target.START,
+                Instruction.Create(OpCodes.Ldarg_1),
+                Instruction.Create(OpCodes.Ldarg_2),
+                Instruction.Create(OpCodes.Call, mod.Import(GetClientMethod("GetData")))
+                );
+            #endregion
+        }
         private static FieldInfo GetClientField(string name)
         {
             return typeof(Client).GetField(name, BindingFlags.NonPublic | BindingFlags.Static);
