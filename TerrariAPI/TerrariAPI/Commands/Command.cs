@@ -258,7 +258,7 @@ namespace TerrariAPI.Commands
         public static Match GetTile(string str)
         {
             int directID;
-            if (int.TryParse(str, out directID) && directID > 0 && directID < Client.TileNames.Length)
+            if (int.TryParse(str, out directID) && directID >= 0 && directID < Client.TileNames.Length)
             {
                 return new Match(directID, Client.TileNames[directID]);
             }
